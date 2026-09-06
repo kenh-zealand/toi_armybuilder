@@ -2,55 +2,56 @@
 <meta name="description" content="A fan-made, balanced points and army-builder system for Tide of Iron and every expansion, with a full unit compendium." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
 
 <style>
   :root{
-    --ground:#E7E2D3; --paper:#F3EFE2; --paper-2:#EBE6D6; --sink:#DED8C4;
-    --ink:#232019; --ink-soft:#5C5747; --ink-faint:#8A8371;
-    --line:#C8C1AB; --line-strong:#B2A98D;
-    --olive:#4C5334; --olive-bright:#6C7645;
-    --brass:#9B7726; --brass-soft:#efe6cf;
-    --oxide:#A0371E;
-    --ok:#4E6A36; --warn:#9A6E17; --fail:#A0371E;
+    --ground:#E5E0D1; --paper:#FCFAF4; --paper-2:#F1EDE0; --sink:#DAD3BE;
+    --ink:#1D1A13; --ink-soft:#413C2F; --ink-faint:#5F5847;
+    --line:#CEC6AE; --line-strong:#B7AD8E;
+    --olive:#454C2E; --olive-bright:#5E6A3C;
+    --brass:#8A6A1E; --brass-soft:#efe6cf;
+    --oxide:#973219;
+    --ok:#43602E; --warn:#8A6111; --fail:#973219;
     --ok-bg:#e0e7d2; --warn-bg:#f0e6cd; --fail-bg:#f0dcd3;
-    --shadow:0 1px 2px rgba(35,32,25,.08), 0 6px 20px rgba(35,32,25,.06);
+    --shadow:0 1px 2px rgba(35,32,25,.10), 0 8px 24px rgba(35,32,25,.09);
     --radius:3px;
   }
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-    --ground:#15170F; --paper:#20231A; --paper-2:#272B1F; --sink:#1A1D14;
-    --ink:#E7E2CF; --ink-soft:#A49E86; --ink-faint:#7E7963;
-    --line:#3A3E2E; --line-strong:#4B5039;
-    --olive:#8C9760; --olive-bright:#A6B078;
-    --brass:#CBA050; --brass-soft:#332c19;
-    --oxide:#D26A4C;
-    --ok:#93B26C; --warn:#D6A441; --fail:#D26A4C;
+    --ground:#13150D; --paper:#1E211A; --paper-2:#282C21; --sink:#191C13;
+    --ink:#F1ECDA; --ink-soft:#C4BDA6; --ink-faint:#978F76;
+    --line:#3F4332; --line-strong:#555A44;
+    --olive:#95A067; --olive-bright:#AEB980;
+    --brass:#D3A954; --brass-soft:#342d19;
+    --oxide:#DC7250;
+    --ok:#9BBB73; --warn:#DBAA47; --fail:#DC7250;
     --ok-bg:#242a1a; --warn-bg:#2f2919; --fail-bg:#2e2018;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.30);
   }}
   :root[data-theme="dark"]{
-    --ground:#15170F; --paper:#20231A; --paper-2:#272B1F; --sink:#1A1D14;
-    --ink:#E7E2CF; --ink-soft:#A49E86; --ink-faint:#7E7963;
-    --line:#3A3E2E; --line-strong:#4B5039;
-    --olive:#8C9760; --olive-bright:#A6B078;
-    --brass:#CBA050; --brass-soft:#332c19;
-    --oxide:#D26A4C;
-    --ok:#93B26C; --warn:#D6A441; --fail:#D26A4C;
+    --ground:#13150D; --paper:#1E211A; --paper-2:#282C21; --sink:#191C13;
+    --ink:#F1ECDA; --ink-soft:#C4BDA6; --ink-faint:#978F76;
+    --line:#3F4332; --line-strong:#555A44;
+    --olive:#95A067; --olive-bright:#AEB980;
+    --brass:#D3A954; --brass-soft:#342d19;
+    --oxide:#DC7250;
+    --ok:#9BBB73; --warn:#DBAA47; --fail:#DC7250;
     --ok-bg:#242a1a; --warn-bg:#2f2919; --fail-bg:#2e2018;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.30);
   }
 
   *{box-sizing:border-box}
   body{
     background:var(--ground); color:var(--ink);
-    font-family:"Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
-    line-height:1.5; margin:0;
-    -webkit-font-smoothing:antialiased;
+    font-family:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size:15.5px; line-height:1.58; margin:0;
+    text-rendering:optimizeLegibility;
   }
-  h1,h2,h3,h4{font-family:"Barlow Condensed", "Barlow", sans-serif; font-weight:700; margin:0; line-height:1.1; text-wrap:balance;}
+  h1,h2,h3,h4{font-family:"Barlow Condensed", "IBM Plex Sans", sans-serif; font-weight:700; margin:0; line-height:1.12; text-wrap:balance;}
   .mono{font-family:"IBM Plex Mono", ui-monospace, monospace;}
   button{font-family:inherit; cursor:pointer}
   a{color:var(--olive-bright)}
+  @media (max-width:640px){ body{font-size:16px} }
 
   .wrap{max-width:1220px; margin:0 auto; padding:0 20px 80px}
 
@@ -62,14 +63,14 @@
   .masthead-inner{max-width:1220px; margin:0 auto; padding:18px 20px 14px; position:relative}
   .eyebrow{
     font-family:"Barlow Condensed",sans-serif; font-weight:600;
-    text-transform:uppercase; letter-spacing:.22em; font-size:12px;
+    text-transform:uppercase; letter-spacing:.16em; font-size:12.5px;
     color:var(--oxide);
   }
   h1.title{
-    font-size:clamp(30px, 5vw, 46px); letter-spacing:.03em; text-transform:uppercase;
-    margin:2px 0 4px;
+    font-size:clamp(30px, 5vw, 46px); letter-spacing:.02em; text-transform:uppercase;
+    margin:2px 0 5px;
   }
-  .subtitle{color:var(--ink-soft); max-width:62ch; font-size:14.5px}
+  .subtitle{color:var(--ink-soft); max-width:62ch; font-size:15px; line-height:1.6}
   .ver{display:inline-block; vertical-align:middle; margin-left:12px; position:relative; top:-5px;
     font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:400; letter-spacing:0; text-transform:none;
     color:var(--ink-faint); border:1px solid var(--line-strong); border-radius:2px; padding:2px 7px}
@@ -104,7 +105,7 @@
     letter-spacing:.14em; font-size:11px; color:var(--ink-faint);
   }
   select, input[type=number], input[type=text]{
-    font-family:"Barlow", sans-serif; font-size:14px; color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, sans-serif; font-size:15px; color:var(--ink);
     background:var(--paper-2); border:1px solid var(--line-strong); border-radius:var(--radius);
     padding:7px 9px;
   }
@@ -128,11 +129,11 @@
     flex:1 1 320px; min-width:260px; border-left:3px solid var(--brass); padding-left:12px;
   }
   .doctrine b{font-family:"Barlow Condensed",sans-serif; letter-spacing:.02em; text-transform:uppercase; font-size:15px}
-  .doctrine p{margin:2px 0 0; font-size:13px; color:var(--ink-soft)}
+  .doctrine p{margin:2px 0 0; font-size:13.5px; color:var(--ink-soft)}
   .doctrine.briefing{border-left-color:var(--oxide)}
-  .doctrine.briefing .vc{display:block; margin-top:5px; font-size:12px; color:var(--ink-faint)}
-  .doctrine.briefing .orders{display:block; margin-top:5px; font-size:12.5px; color:var(--ink); font-weight:500}
-  .gauge-sub{margin-top:6px; font-size:11.5px; color:var(--ink-faint); font-family:"IBM Plex Mono",monospace}
+  .doctrine.briefing .vc{display:block; margin-top:5px; font-size:12.5px; color:var(--ink-soft)}
+  .doctrine.briefing .orders{display:block; margin-top:5px; font-size:13px; color:var(--ink); font-weight:500}
+  .gauge-sub{margin-top:6px; font-size:12px; color:var(--ink-soft); font-family:"IBM Plex Mono",monospace}
 
   /* ---- Builder grid ---- */
   .builder{display:grid; grid-template-columns:1fr 384px; gap:26px; align-items:start}
@@ -147,17 +148,17 @@
   }
   .tabs button[aria-selected="true"]{background:var(--olive); color:#F3EFE2; border-color:var(--olive)}
 
-  .cat-note{font-size:13px; color:var(--ink-soft); margin:-4px 0 8px; max-width:64ch}
-  .statleg{font-size:11.5px; color:var(--ink-faint); margin:0 0 14px; padding:7px 10px;
-    background:var(--paper-2); border:1px solid var(--line); border-radius:var(--radius); max-width:66ch}
-  .statleg b{color:var(--ink-soft)}
+  .cat-note{font-size:13.5px; color:var(--ink-soft); margin:-4px 0 8px; max-width:66ch}
+  .statleg{font-size:12.5px; color:var(--ink-soft); margin:0 0 14px; padding:8px 11px;
+    background:var(--paper-2); border:1px solid var(--line); border-radius:var(--radius); max-width:70ch; line-height:1.55}
+  .statleg b{color:var(--ink)}
 
   .unit{
     background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
     padding:12px 14px; margin-bottom:9px; display:grid;
     grid-template-columns:1fr auto; gap:4px 14px; align-items:start;
   }
-  .unit h4{font-size:17px; letter-spacing:.01em}
+  .unit h4{font-size:17.5px; letter-spacing:.01em}
   .unit .tag{
     display:inline-block; margin-left:8px; vertical-align:middle;
     font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10px;
@@ -166,8 +167,8 @@
   }
   .unit .tag.tag-ext{color:var(--brass); border-color:var(--brass)}
   .unit .tag.tag-fan{color:var(--oxide); border-color:var(--oxide)}
-  .unit .stat{grid-column:1; font-size:12.5px; color:var(--ink-soft); letter-spacing:.02em}
-  .unit .desc{grid-column:1; font-size:12.5px; color:var(--ink-faint); margin-top:2px}
+  .unit .stat{grid-column:1; font-size:13px; color:var(--ink-soft); letter-spacing:.01em}
+  .unit .desc{grid-column:1; font-size:13px; color:var(--ink-soft); margin-top:3px; line-height:1.5}
   .unit .price{
     grid-row:1 / span 2; grid-column:2; text-align:right; align-self:center;
   }
@@ -190,8 +191,8 @@
   .spec-card.has{border-left-color:var(--ok)}
   .spec-card h4{font-size:17px; text-transform:uppercase; letter-spacing:.03em; display:flex; align-items:baseline; gap:9px; flex-wrap:wrap}
   .spec-card h4 .src{color:var(--ink-faint)}
-  .spec-card p{margin:4px 0 0; font-size:13px; color:var(--ink-soft)}
-  .spec-card .pt{font-family:"IBM Plex Mono",monospace; color:var(--brass); font-size:13px}
+  .spec-card p{margin:5px 0 0; font-size:13.5px; color:var(--ink-soft); line-height:1.55}
+  .spec-card .pt{font-family:"IBM Plex Mono",monospace; color:var(--brass); font-size:13px; font-weight:500}
   .spec-foot{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:9px}
   .spec-chip{
     background:var(--brass-soft); color:var(--brass); border:1px solid var(--brass);
@@ -217,13 +218,13 @@
   .gauge{padding:12px 15px; border-bottom:1px solid var(--line)}
   .gauge-nums{display:flex; justify-content:space-between; align-items:baseline; font-family:"IBM Plex Mono",monospace}
   .gauge-nums .big{font-size:26px; font-weight:500}
-  .gauge-nums .lim{font-size:13px; color:var(--ink-faint)}
+  .gauge-nums .lim{font-size:13.5px; color:var(--ink-soft)}
   .bar{height:8px; background:var(--sink); border-radius:2px; margin-top:8px; overflow:hidden}
   .bar span{display:block; height:100%; background:var(--olive-bright); transition:width .18s}
   .bar span.over{background:var(--fail)}
 
-  .checks{padding:10px 15px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:5px}
-  .check{display:flex; gap:8px; align-items:baseline; font-size:12.5px}
+  .checks{padding:10px 15px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:6px}
+  .check{display:flex; gap:8px; align-items:baseline; font-size:13px; line-height:1.45}
   .check .dot{width:8px; height:8px; border-radius:50%; flex:none; position:relative; top:1px}
   .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.fail{background:var(--fail)}
   .check.ok{color:var(--ink-soft)} .check.warn{color:var(--warn)} .check.fail{color:var(--fail)}
@@ -232,13 +233,13 @@
   @media (max-width:940px){ .rlist{max-height:none} }
   .rgroup-h{
     font-family:"Barlow Condensed",sans-serif; font-weight:700; text-transform:uppercase;
-    letter-spacing:.14em; font-size:11px; color:var(--oxide);
-    margin:12px 0 5px; padding-bottom:3px; border-bottom:1px solid var(--line);
+    letter-spacing:.1em; font-size:12px; color:var(--oxide);
+    margin:13px 0 5px; padding-bottom:3px; border-bottom:1px solid var(--line);
   }
-  .ritem{padding:7px 0; border-bottom:1px dotted var(--line)}
+  .ritem{padding:8px 0; border-bottom:1px dotted var(--line)}
   .ritem-top{display:flex; justify-content:space-between; gap:8px; align-items:baseline}
-  .ritem-name{font-weight:600; font-size:14px}
-  .ritem-cost{font-family:"IBM Plex Mono",monospace; font-size:14px; flex:none}
+  .ritem-name{font-weight:600; font-size:14.5px}
+  .ritem-cost{font-family:"IBM Plex Mono",monospace; font-size:14px; flex:none; font-weight:500}
   .ritem-cfg{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; align-items:center}
   .slot{
     width:26px; height:26px; border:1px solid var(--line-strong); border-radius:2px;
@@ -249,12 +250,12 @@
   .slot.of{background:var(--brass-soft); color:var(--brass); border-color:var(--brass)}
   .slot.em{opacity:.4}
   :root[data-theme="dark"] .slot.el, :root:not([data-theme="light"]) .slot.el{background:#2b331f}
-  .ritem-cfg select{font-size:12px; padding:4px 6px; max-width:170px}
+  .ritem-cfg select{font-size:12.5px; padding:5px 6px; max-width:180px}
   .qty{display:flex; align-items:center; border:1px solid var(--line-strong); border-radius:2px; overflow:hidden}
   .qty button{background:var(--paper-2); border:0; width:24px; height:26px; font-size:15px; color:var(--ink-soft)}
   .qty span{width:30px; text-align:center; font-family:"IBM Plex Mono",monospace; font-size:13px}
   .x-btn{background:transparent; border:0; color:var(--fail); font-size:12px; font-family:"Barlow Condensed",sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:.06em; padding:2px 4px}
-  .mini-note{font-size:11.5px; color:var(--ink-faint); margin-top:3px}
+  .mini-note{font-size:12.5px; color:var(--ink-faint); margin-top:3px; line-height:1.45}
 
   .roster-actions{padding:12px 15px; display:flex; flex-wrap:wrap; gap:7px; border-top:1px solid var(--line-strong); background:var(--paper-2)}
   .roster-actions button{
@@ -265,7 +266,7 @@
   .roster-actions button:hover{border-color:var(--olive); color:var(--ink)}
   .roster-actions button.primary{background:var(--olive); color:#F1EDDF; border-color:var(--olive)}
 
-  .empty-note{padding:24px 15px; text-align:center; color:var(--ink-faint); font-size:13px}
+  .empty-note{padding:24px 15px; text-align:center; color:var(--ink-soft); font-size:13.5px; line-height:1.55}
 
   /* ---- Modal / export ---- */
   dialog{
@@ -288,27 +289,27 @@
     font-size:24px; text-transform:uppercase; letter-spacing:.05em; color:var(--olive);
     border-bottom:2px solid var(--olive); padding-bottom:4px; margin-bottom:6px;
   }
-  .comp .lead{color:var(--ink-soft); font-size:14px; max-width:74ch; margin:6px 0 14px}
+  .comp .lead{color:var(--ink-soft); font-size:14.5px; max-width:74ch; margin:6px 0 14px; line-height:1.62}
   .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius)}
-  table.ref{border-collapse:collapse; width:100%; font-size:13px; min-width:560px}
-  table.ref th, table.ref td{text-align:left; padding:7px 10px; border-bottom:1px solid var(--line)}
+  table.ref{border-collapse:collapse; width:100%; font-size:13.5px; min-width:560px}
+  table.ref th, table.ref td{text-align:left; padding:8px 11px; border-bottom:1px solid var(--line)}
   table.ref thead th{
     background:var(--paper-2); font-family:"Barlow Condensed",sans-serif; text-transform:uppercase;
-    letter-spacing:.1em; font-size:11px; color:var(--ink-faint); position:sticky; top:0;
+    letter-spacing:.08em; font-size:11.5px; color:var(--ink-soft); position:sticky; top:0;
   }
-  table.ref tbody tr:hover{background:var(--paper)}
+  table.ref tbody tr:hover{background:var(--paper-2)}
   table.ref .num{font-family:"IBM Plex Mono",monospace; text-align:right; white-space:nowrap}
-  table.ref .src{font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint)}
+  table.ref .src{font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint)}
 
   .callout{
     background:var(--paper); border:1px solid var(--line); border-top:3px solid var(--olive);
-    border-radius:var(--radius); padding:14px 16px; font-size:13px; color:var(--ink-soft);
+    border-radius:var(--radius); padding:14px 16px; font-size:13.5px; color:var(--ink-soft); line-height:1.6;
   }
   .callout b{color:var(--ink)}
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:9px}
   @media (max-width:680px){ .grid2{grid-template-columns:1fr} }
 
-  footer.foot{max-width:1220px; margin:40px auto 0; padding:18px 20px; border-top:1px solid var(--line); color:var(--ink-faint); font-size:12px}
+  footer.foot{max-width:1220px; margin:40px auto 0; padding:18px 20px; border-top:1px solid var(--line); color:var(--ink-soft); font-size:12.5px; line-height:1.6}
 
   /* ---- Review sheet ---- */
   .sheet{max-width:980px; margin:0 auto; background:var(--paper); border:1px solid var(--line-strong); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
@@ -324,28 +325,28 @@
   .sheet-meta{display:flex; flex-wrap:wrap; gap:4px 20px; margin-top:7px; font-size:12px;
     color:rgba(241,237,223,.88); font-family:"Barlow Condensed",sans-serif; text-transform:uppercase; letter-spacing:.07em; font-weight:600}
   .sheet-body{padding:18px 24px 30px}
-  .sheet-brief{border-left:3px solid var(--oxide); padding-left:13px; margin-bottom:14px; font-size:12.5px; color:var(--ink-soft); line-height:1.7}
+  .sheet-brief{border-left:3px solid var(--oxide); padding-left:13px; margin-bottom:14px; font-size:13px; color:var(--ink-soft); line-height:1.7}
   .sheet-brief b{color:var(--ink)}
-  .sheet-check{display:flex; flex-wrap:wrap; gap:5px 16px; margin:10px 0}
-  .sheet-check .check{font-size:11.5px}
+  .sheet-check{display:flex; flex-wrap:wrap; gap:6px 16px; margin:10px 0}
+  .sheet-check .check{font-size:12.5px}
   .comp-tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:8px; margin:14px 0 6px}
   .comp-tile{border:1px solid var(--line); border-radius:var(--radius); padding:9px 8px; text-align:center; background:var(--paper-2)}
   .comp-tile .n{font-family:"IBM Plex Mono",monospace; font-size:22px; font-weight:500; line-height:1}
-  .comp-tile .l{font-size:9.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint); font-family:"Barlow Condensed",sans-serif; font-weight:600; margin-top:3px}
-  .sheet h3{font-size:15px; text-transform:uppercase; letter-spacing:.09em; color:var(--olive);
+  .comp-tile .l{font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); font-family:"Barlow Condensed",sans-serif; font-weight:600; margin-top:4px}
+  .sheet h3{font-size:15.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--olive);
     border-bottom:1px solid var(--line-strong); padding-bottom:3px; margin:20px 0 4px}
-  .sheet-row{display:grid; grid-template-columns:1fr auto; gap:3px 16px; padding:9px 0; border-bottom:1px dotted var(--line)}
-  .sheet-row .nm{font-weight:600; font-size:14px}
-  .sheet-row .ct{grid-row:1; grid-column:2; font-family:"IBM Plex Mono",monospace; font-size:14px; align-self:start; white-space:nowrap}
-  .sheet-break{grid-column:1 / -1; display:flex; flex-direction:column; gap:2px; margin-top:2px}
+  .sheet-row{display:grid; grid-template-columns:1fr auto; gap:3px 16px; padding:10px 0; border-bottom:1px dotted var(--line)}
+  .sheet-row .nm{font-weight:600; font-size:14.5px}
+  .sheet-row .ct{grid-row:1; grid-column:2; font-family:"IBM Plex Mono",monospace; font-size:14px; align-self:start; white-space:nowrap; font-weight:500}
+  .sheet-break{grid-column:1 / -1; display:flex; flex-direction:column; gap:3px; margin-top:3px}
   .sheet-break > div{display:flex; justify-content:space-between; gap:14px; align-items:baseline;
-    font-size:11.5px; color:var(--ink-faint); padding-left:13px; border-left:2px solid var(--line)}
-  .sheet-break > div > span:first-child{line-height:1.45}
+    font-size:12.5px; color:var(--ink-soft); padding-left:13px; border-left:2px solid var(--line-strong)}
+  .sheet-break > div > span:first-child{line-height:1.5}
   .sheet-break > div > span:last-child{font-family:"IBM Plex Mono",monospace; flex:none; color:var(--ink-soft)}
   .sheet-total{display:flex; justify-content:space-between; align-items:baseline; margin-top:18px; padding-top:11px;
     border-top:2px solid var(--olive); font-family:"Barlow Condensed",sans-serif; text-transform:uppercase; letter-spacing:.07em; font-weight:700}
   .sheet-total .big{font-family:"IBM Plex Mono",monospace; font-size:21px; font-weight:500}
-  .sheet-hint{font-size:11.5px; color:var(--ink-faint); margin-top:14px}
+  .sheet-hint{font-size:12.5px; color:var(--ink-soft); margin-top:14px; line-height:1.55}
 
   :focus-visible{outline:2px solid var(--brass); outline-offset:2px}
   @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
@@ -474,7 +475,7 @@
 
 /* Version = 1.<number of revisions since the first release>.
    Bump the last entry's number and add a CHANGELOG line on every revision. */
-const APP_VERSION = '1.10';
+const APP_VERSION = '1.11';
 const CHANGELOG = [
   ['1.0', 'First release — builder, order-of-battle checks, compendium.'],
   ['1.1', 'Scenario-driven: 9 board-wargame scenarios set effective points, fortification, reserves and the checklist.'],
@@ -487,6 +488,7 @@ const CHANGELOG = [
   ['1.8', 'Separate anti-personnel and anti-vehicle profiles (range + firepower) on every unit, shown as "Inf R/F · Veh R/F", with a stat-line legend.'],
   ['1.9', 'Collections row — tick which sets you own (All expansions, Days of the Fox, Normandy, Fury of the Bear, Stalingrad, Tools of War, house-rule, fan) to control which units you can field.'],
   ['1.10', 'Confirmed against the rulebook: a squad with a heavy infantry weapon may never take a specialization token — enforced and cited in the compendium.'],
+  ['1.11', 'Readability pass — IBM Plex Sans body text, larger type, a brighter paper and much darker ink so the content stops blending into the background, especially on mobile.'],
 ];
 
 /* =====================================================================
@@ -1732,7 +1734,7 @@ const TIER_LABEL = { core:'In the game', ext:'House rule', fan:'Fan' };
 function refRows(arr, kind, showTier){
   return arr.map(u=>`<tr>
     <td>${u.name}</td>
-    <td class="mono" style="font-size:12px">${u.stat||''}</td>
+    <td class="mono" style="font-size:13px">${u.stat||''}</td>
     <td class="src">${u.src}</td>
     ${showTier ? `<td class="src" style="color:${u.tier==='core'?'var(--ok)':u.tier==='fan'?'var(--oxide)':'var(--brass)'}">${TIER_LABEL[u.tier]||'In the game'}</td>` : ''}
     <td class="num">${u.pt!=null? u.pt : (kind==='squad'?'from '+ (u.kind==='command'?28:u.kind==='elite'?36:u.kind==='mg'?17:u.kind==='mortar'?21:20):'')}</td>
@@ -1753,23 +1755,23 @@ function buildCompendium(){
 
   h += `<section><h2>Games &amp; expansions</h2>
     <div class="tablewrap"><table class="ref"><thead><tr><th>Release</th><th>Year · publisher</th><th>Adds</th></tr></thead><tbody>
-    ${EXPANSIONS.map(r=>`<tr><td><b>${r[0]}</b></td><td class="src">${r[1]}</td><td style="font-size:12.5px">${r[2]}</td></tr>`).join('')}
+    ${EXPANSIONS.map(r=>`<tr><td><b>${r[0]}</b></td><td class="src">${r[1]}</td><td style="font-size:13px">${r[2]}</td></tr>`).join('')}
     </tbody></table></div>
   </section>`;
 
   h += `<section><h2>Reading the stat line</h2>
     <p class="lead">${STAT_LEGEND} ToI unit cards carry two target profiles because range <i>and</i> firepower differ by target — e.g. a US machine-gun team fires at infantry at range 5 with 3 dice, but at vehicles only at range 3 with 2 dice. Plain infantry can only hit a vehicle when adjacent (Veh 1/1) — that is what the Anti-Tank token fixes.</p>
-    <p class="lead" style="font-size:12.5px">Where the FFG (2008) and 1A "Next Wave / Tools of War" (2015) editions give a unit different numbers, this table follows the FFG values.</p>
+    <p class="lead" style="font-size:13px">Where the FFG (2008) and 1A "Next Wave / Tools of War" (2015) editions give a unit different numbers, this table follows the FFG values.</p>
   </section>`;
 
   h += `<section><h2>Infantry — figures &amp; teams (all nations)</h2>
     <p class="lead">Squads are built on a base: up to 4 light figures <i>or</i> 2 heavy weapon teams. A specialized squad may hold at most one specialization, no heavy weapon, and may not swap figures.</p>
     <div class="tablewrap"><table class="ref"><thead><tr><th>Unit</th><th>Stats</th><th>Source</th><th class="num">Pts</th></tr></thead><tbody>
-      <tr><td>Regular Infantry</td><td class="mono" style="font-size:12px">${FIG.regular.stat}</td><td class="src">Base</td><td class="num">5</td></tr>
-      <tr><td>Elite Infantry</td><td class="mono" style="font-size:12px">${FIG.elite.stat}</td><td class="src">Base</td><td class="num">9</td></tr>
-      <tr><td>Officer</td><td class="mono" style="font-size:12px">${FIG.officer.stat}</td><td class="src">Base</td><td class="num">13</td></tr>
-      <tr><td>Machine Gun Team (heavy)</td><td class="mono" style="font-size:12px">Inf 5/3 · Veh 3/2 · Mv 4 · Rapid Op Fire</td><td class="src">Base</td><td class="num">17</td></tr>
-      <tr><td>Mortar Team (heavy)</td><td class="mono" style="font-size:12px">Inf 8/4 · Veh 8/2 · Mv 4 · area / indirect</td><td class="src">Base</td><td class="num">21</td></tr>
+      <tr><td>Regular Infantry</td><td class="mono" style="font-size:13px">${FIG.regular.stat}</td><td class="src">Base</td><td class="num">5</td></tr>
+      <tr><td>Elite Infantry</td><td class="mono" style="font-size:13px">${FIG.elite.stat}</td><td class="src">Base</td><td class="num">9</td></tr>
+      <tr><td>Officer</td><td class="mono" style="font-size:13px">${FIG.officer.stat}</td><td class="src">Base</td><td class="num">13</td></tr>
+      <tr><td>Machine Gun Team (heavy)</td><td class="mono" style="font-size:13px">Inf 5/3 · Veh 3/2 · Mv 4 · Rapid Op Fire</td><td class="src">Base</td><td class="num">17</td></tr>
+      <tr><td>Mortar Team (heavy)</td><td class="mono" style="font-size:13px">Inf 8/4 · Veh 8/2 · Mv 4 · area / indirect</td><td class="src">Base</td><td class="num">21</td></tr>
     </tbody></table></div>
   </section>`;
 
@@ -1818,7 +1820,7 @@ function buildCompendium(){
         <td class="num">${r[1].mult? (r[1].mult>1?'+':'')+Math.round((r[1].mult-1)*100)+'%' : '100%'}</td>
         <td class="num">${r[1].fort? Math.round(r[1].fort*100)+'%'+(r[1].freeEntrench?` +${r[1].freeEntrench}`:'') : '—'}</td>
         <td class="num">${r[1].reserves? Math.round(r[1].reserves*100)+'%':'—'}</td>
-        ${i===0?`<td rowspan="${rows.length}" style="font-size:12px">${s.vc}</td>`:''}
+        ${i===0?`<td rowspan="${rows.length}" style="font-size:13px">${s.vc}</td>`:''}
       </tr>`).join('');
     }).join('')}
     </tbody></table></div>
@@ -1835,7 +1837,7 @@ function buildCompendium(){
 
   h += `<section><h2>Sources</h2>
     <p class="lead">Unit lists and component overviews were checked against:</p>
-    <ul style="font-size:13px; color:var(--ink-soft); line-height:1.7; max-width:74ch">
+    <ul style="font-size:13.5px; color:var(--ink-soft); line-height:1.75; max-width:74ch">
       <li>Fantasy Flight Games rulebooks (incl. <i>Fury of the Bear</i> and <i>Normandy</i> — component lists and unit cards)</li>
       <li>1A Games: <i>Next Wave</i> Rules of Play, <i>Tools of War</i>, and the Kickstarter bonus booklet</li>
       <li>The fan site <b>commandsandcolors.net/tideofiron</b> — component overviews per expansion</li>
@@ -1848,7 +1850,7 @@ function buildCompendium(){
   h += `<section><h2>Version history</h2>
     <p class="lead">Version <b>1.N</b>, where <b>N</b> is the number of revisions since the first release. Currently <b>v${APP_VERSION}</b>.</p>
     <div class="tablewrap"><table class="ref"><thead><tr><th class="num">Version</th><th>Change</th></tr></thead><tbody>
-    ${CHANGELOG.slice().reverse().map(r=>`<tr><td class="num">v${r[0]}</td><td style="font-size:12.5px">${r[1]}</td></tr>`).join('')}
+    ${CHANGELOG.slice().reverse().map(r=>`<tr><td class="num">v${r[0]}</td><td style="font-size:13px">${r[1]}</td></tr>`).join('')}
     </tbody></table></div>
   </section>`;
 
