@@ -108,6 +108,7 @@ function renderValidation() {
   const markup = buildValidationMarkup(validation);
   summaryContainer.innerHTML = markup.summaryHtml;
   issuesList.innerHTML = markup.issuesHtml;
+  issuesList.hidden = !markup.issuesHtml;
 }
 
 function syncScenarioDefaults() {
@@ -146,12 +147,6 @@ expansionOptions.addEventListener("change", (event) => {
     expansionOptions.querySelectorAll("input:checked"),
     (input) => input.value,
   );
-  const availableUnitIds = new Set(
-    getUnitsForSelection(state).map((unit) => unit.id),
-  );
-  state.roster = state.roster.filter((unitId) => {
-    return availableUnitIds.has(unitId);
-  });
   render();
 });
 

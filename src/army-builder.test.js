@@ -56,6 +56,21 @@ test("reports point overflow", () => {
   assert.match(validation.issues.join(" "), /exceeding the 10 point limit/);
 });
 
+test("reports units outside the current faction or expansion selection", () => {
+  const validation = validateRoster({
+    scenarioId: "extended-front",
+    faction: "Alliance",
+    enabledExpansions: ["core"],
+    roster: ["alliance-captain", "alliance-rifle-team", "alliance-engineers"],
+  });
+
+  assert.equal(validation.isValid, false);
+  assert.match(
+    validation.issues.join(" "),
+    /Alliance Engineers is not available for the current faction and expansion selection/,
+  );
+});
+
 test("renders validation issues and clears them when valid", () => {
   const invalidMarkup = buildValidationMarkup(
     validateRoster({

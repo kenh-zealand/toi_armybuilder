@@ -1,5 +1,7 @@
 import { scenarios, units } from "./data.js";
 
+const unitById = new Map(units.map((unit) => [unit.id, unit]));
+
 export function getScenarioById(scenarioId) {
   return scenarios.find((scenario) => scenario.id === scenarioId) ?? scenarios[0];
 }
@@ -22,7 +24,7 @@ export function getUnitsForSelection({
 export function summarizeRoster({ scenarioId, roster }) {
   const scenario = getScenarioById(scenarioId);
   const selectedUnits = roster
-    .map((unitId) => units.find((unit) => unit.id === unitId))
+    .map((unitId) => unitById.get(unitId))
     .filter(Boolean);
   const totalPoints = selectedUnits.reduce((sum, unit) => sum + unit.points, 0);
   const roleCounts = selectedUnits.reduce((counts, unit) => {
@@ -41,10 +43,17 @@ export function summarizeRoster({ scenarioId, roster }) {
   };
 }
 
-export function validateRoster({ scenarioId, roster }) {
+export function validateRoster({ scenarioId, roster, faction, enabledExpansions }) {
   const summary = summarizeRoster({ scenarioId, roster });
   const { scenario, totalPoints, unitCount, roleCounts } = summary;
   const issues = [];
+  const availableUnitIds = faction
+    ? new Set(
+        getUnitsForSelection({ scenarioId, faction, enabledExpansions }).map(
+          (unit) => unit.id,
+        ),
+      )
+    : null;
 
   if (unitCount > scenario.maxUnits) {
     issues.push(
@@ -61,6 +70,14 @@ export function validateRoster({ scenarioId, roster }) {
   for (const role of scenario.requiredRoles) {
     if (!roleCounts[role]) {
       issues.push(`Roster requires at least one ${role} unit for ${scenario.name}.`);
+    }
+  }
+
+  for (const unit of summary.selectedUnits) {
+    if (availableUnitIds && !availableUnitIds.has(unit.id)) {
+      issues.push(
+        `${unit.name} is not available for the current faction and expansion selection.`,
+      );
     }
   }
 
