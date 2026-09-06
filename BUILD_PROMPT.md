@@ -1,4 +1,4 @@
-# Build prompt — "Tide of Iron · Battle Builder" (v1.12)
+# Build prompt — "Tide of Iron · Battle Builder" (v1.13)
 
 Paste everything below the line into a capable chatbot to recreate this app.
 It is a complete specification: data, rules, features, and design.
@@ -396,9 +396,45 @@ expansions table; Infantry figures & teams; **Specialization tokens** (all 10
 with rules + experience / munitions notes, and the heavy‑weapon prohibition
 quoted); **Units by nation** (each nation's squads + transports + vehicles +
 guns, with Source and Tier columns; Tier shown as *In the game* / *House
-rule* / *Fan*, colour‑coded); Fortifications table; **Scenarios** table
-(name, type, role, points modifier, fortification %, reserve %, victory);
-Order of battle summary; Sources; **Version history** table.
+rule* / *Fan*, colour‑coded); **Anti‑tank guns & equipment — movement and
+handling** (see below); Fortifications table; **Scenarios** table (name,
+type, role, points modifier, fortification %, reserve %, victory); Order of
+battle summary; Sources; **Version history** table.
+
+**Anti‑tank guns & Equipment rules** to state in the compendium (consolidated
+from Days of the Fox + Fury of the Bear):
+- Every AT gun has the **Equipment** trait: no crew of its own, does nothing
+  without a friendly unit in its space.
+- *Firing:* a **Concentrated Fire** or **Prepare Op Fire** action needs a
+  friendly **squad** (fresh or Op Fire) in the space; firing the gun does not
+  activate that squad; on Op Fire the gun is fatigued. A **pinned** squad
+  fires it at half firepower if a friendly officer is present. The gun cannot
+  be activated while it or the manning unit is pinned / disrupted / heavily
+  damaged / in a pillbox, bunker or trench. Equipment can never do Fire &
+  Movement or Assault.
+- *Moving with the crew alone:* an **Advance** action, only with a **fresh
+  friendly unit** in the space; fatigue both and move both together **one
+  space regardless of terrain** into an enemy‑free space (single action); may
+  not enter impassable spaces or spaces already holding 2+ units. A squad in
+  an entrenchment (not pillbox/trench) may still work the gun, which also
+  gains +1 cover from the entrenchment.
+- *Optional vehicle limber / tow (Days of the Fox):* **load** with an Advance
+  action — vehicle, gun and a fresh friendly squad must start in the same
+  space; **carry** at normal vehicle movement, the gun not counting against
+  transport capacity, max one gun per vehicle; **unload** with an Advance
+  action and a fresh friendly squad present — the gun is **fatigued** so it
+  can't fire that turn. Tow‑pairing guideline: half‑tracks tow heavy guns
+  (88), Bren Carriers only light guns (57 mm / 6‑pdr), trucks tow light /
+  medium guns.
+- *Combat & capture:* **Fragile** (heavily damaged = destroyed); **Concussive
+  Firepower** (+3 FP / +3 range vs a squad in a building or pillbox); when
+  assaulted adds no dice, takes no hits, doesn't retreat; if an enemy unit
+  shares its space the gun counts as theirs and they may advance/fire it;
+  an equipment unit alone doesn't block enemy movement into its space.
+- *Squad transport (separate):* a squad embarks / disembarks a
+  Transport‑trait vehicle for **2 MP** as part of its move, up to capacity
+  (trucks 2, half‑tracks / carriers 1); can't act while aboard; dies with the
+  vehicle.
 
 ### Print / PDF
 `window.print()` from Review. `@media print` hides everything except the
@@ -416,7 +452,7 @@ name, items, scenario, role, collections). **New** resets to a starter
 scenario / deployment / victory). Theme choice also in `localStorage`.
 
 ### Versioning
-`APP_VERSION = "1.12"`. Keep a `CHANGELOG` array of `[version, description]`.
+`APP_VERSION = "1.13"`. Keep a `CHANGELOG` array of `[version, description]`.
 Show the version as a badge next to the title, in the footer, on the review
 sheet header, in the text export, and as a **Version history** table in the
 compendium. The scheme is `1.N` where N = number of revisions since the first
