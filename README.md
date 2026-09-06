@@ -14,28 +14,45 @@ compiled from the FFG / 1A rulebooks and the community reference at
 Points, doctrines, the order of battle and scenario modifiers are this
 project's own house rules.
 
-## Use it
+## Try it locally
 
-Open **`index.html`** in a browser — a single self‑contained page, no server,
-no dependencies, nothing leaves your machine (saved lists live in
-`localStorage`).
+Download the repo and double‑click **`index.html`** — it opens in your
+browser and works completely offline. Nothing is installed, nothing is sent
+anywhere; saved army lists stay in that browser on that computer.
 
-### Install it (works offline)
+## Publish it (so others can use it)
 
-It's a **PWA**. Serve the folder over HTTPS — the easiest way is **GitHub
-Pages** (repo → Settings → Pages → *Deploy from a branch* → `main` / root),
-which publishes it at `https://<user>.github.io/toi_armybuilder/`.
+The app is one static folder, so any static host works. The simplest, free
+option:
 
-Then on that page:
+1. In this repo on GitHub, go to **Settings → Pages**.
+2. Under *Build and deployment*, set **Source: Deploy from a branch**,
+   **Branch: `main`**, folder **`/ (root)`**, and **Save**.
+3. Wait ~1 minute. GitHub gives you a link like
+   `https://<your-username>.github.io/toi_armybuilder/`.
 
-- **Desktop Chrome / Edge** — click the install icon in the address bar.
-- **Android Chrome** — menu → *Install app* / *Add to Home screen*.
-- **iPhone / iPad Safari** — Share → *Add to Home Screen*.
+Share that link. Anyone can open it in a browser — no account, no install
+needed. Every time you `git push` (after `node build.mjs`) the link updates
+automatically.
 
-Once installed it opens full‑screen like a native app and runs with no
-internet connection (the fonts fall back to system fonts offline). A service
-worker (`sw.js`) caches the app; its cache name carries `APP_VERSION`, so a
-new build is picked up automatically on the next visit.
+*(Alternative with no settings to change: drag the repo folder onto
+[app.netlify.com/drop](https://app.netlify.com/drop) for an instant link.)*
+
+## Send this to players
+
+Once you have a link, this is the whole message you need to send them:
+
+> **Tide of Iron Battle Builder:** `<your link here>`
+>
+> Open it in any browser. To keep it handy like an app:
+> - **Phone (iPhone):** tap Share → *Add to Home Screen*.
+> - **Phone (Android):** menu (⋮) → *Install app* / *Add to Home screen*.
+> - **Computer (Chrome or Edge):** click the small install icon at the right
+>   end of the address bar.
+>
+> After that it opens full‑screen and keeps working with no internet. Your
+> saved lists live on that one device — use **Save as PDF** or **Export** in
+> the app to keep a copy you can share or print.
 
 ## What it does
 
