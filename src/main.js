@@ -4,6 +4,7 @@ import {
   getUnitsForSelection,
   validateRoster,
 } from "./army-builder.js";
+import { buildValidationMarkup } from "./validation-view.js";
 
 const state = {
   scenarioId: scenarios[0].id,
@@ -94,19 +95,9 @@ function renderRoster() {
 
 function renderValidation() {
   const validation = validateRoster(state);
-  summaryContainer.innerHTML = `
-    <p><strong>${validation.scenario.name}</strong>: ${validation.scenario.description}</p>
-    <p>${validation.totalPoints}/${validation.scenario.maxPoints} points · ${
-      validation.unitCount
-    }/${validation.scenario.maxUnits} units</p>
-    <p class="${validation.isValid ? "status-ok" : "status-warning"}">${
-      validation.isValid ? "Roster is legal for this scenario." : "Roster needs adjustments."
-    }</p>
-  `;
-
-  issuesList.innerHTML = validation.issues
-    .map((issue) => `<li>${issue}</li>`)
-    .join("");
+  const markup = buildValidationMarkup(validation);
+  summaryContainer.innerHTML = markup.summaryHtml;
+  issuesList.innerHTML = markup.issuesHtml;
 }
 
 function syncScenarioDefaults() {
@@ -145,9 +136,11 @@ expansionOptions.addEventListener("change", (event) => {
     expansionOptions.querySelectorAll("input:checked"),
     (input) => input.value,
   );
+  const availableUnitIds = new Set(
+    getUnitsForSelection(state).map((unit) => unit.id),
+  );
   state.roster = state.roster.filter((unitId) => {
-    const unit = units.find((entry) => entry.id === unitId);
-    return unit && state.enabledExpansions.includes(unit.source);
+    return availableUnitIds.has(unitId);
   });
   render();
 });

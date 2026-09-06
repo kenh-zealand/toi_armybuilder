@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { getUnitsForSelection, validateRoster } from "./army-builder.js";
+import { buildValidationMarkup } from "./validation-view.js";
 
 test("filters units by faction and enabled expansions", () => {
   const results = getUnitsForSelection({
@@ -53,4 +54,24 @@ test("reports point overflow", () => {
 
   assert.equal(validation.isValid, false);
   assert.match(validation.issues.join(" "), /exceeding the 10 point limit/);
+});
+
+test("renders validation issues and clears them when valid", () => {
+  const invalidMarkup = buildValidationMarkup(
+    validateRoster({
+      scenarioId: "extended-front",
+      roster: ["alliance-captain", "alliance-rifle-team"],
+    }),
+  );
+  const validMarkup = buildValidationMarkup(
+    validateRoster({
+      scenarioId: "extended-front",
+      roster: ["alliance-captain", "alliance-rifle-team", "alliance-engineers"],
+    }),
+  );
+
+  assert.match(invalidMarkup.summaryHtml, /Roster needs adjustments/);
+  assert.match(invalidMarkup.issuesHtml, /support unit/);
+  assert.match(validMarkup.summaryHtml, /Roster is legal for this scenario/);
+  assert.equal(validMarkup.issuesHtml, "");
 });

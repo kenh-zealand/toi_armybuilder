@@ -9,7 +9,9 @@ Small static army builder for Tide of War with:
 
 ## Run
 
-Open `/home/runner/work/toi_armybuilder/toi_armybuilder/index.html` in a browser.
+Open `index.html` from the repository root in a browser, or serve the directory
+with a simple static server such as `python3 -m http.server` and visit
+`/index.html`.
 
 ## Test
 
