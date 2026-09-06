@@ -1,0 +1,1942 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #faf9f5; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>Tide of Iron - Battle Builder</title>
+<meta name="description" content="A fan-made, balanced points and army-builder system for Tide of Iron and every expansion, with a full unit compendium." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+
+<style>
+  :root{
+    --ground:#E7E2D3; --paper:#F3EFE2; --paper-2:#EBE6D6; --sink:#DED8C4;
+    --ink:#232019; --ink-soft:#5C5747; --ink-faint:#8A8371;
+    --line:#C8C1AB; --line-strong:#B2A98D;
+    --olive:#4C5334; --olive-bright:#6C7645;
+    --brass:#9B7726; --brass-soft:#efe6cf;
+    --oxide:#A0371E;
+    --ok:#4E6A36; --warn:#9A6E17; --fail:#A0371E;
+    --ok-bg:#e0e7d2; --warn-bg:#f0e6cd; --fail-bg:#f0dcd3;
+    --shadow:0 1px 2px rgba(35,32,25,.08), 0 6px 20px rgba(35,32,25,.06);
+    --radius:3px;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --ground:#15170F; --paper:#20231A; --paper-2:#272B1F; --sink:#1A1D14;
+    --ink:#E7E2CF; --ink-soft:#A49E86; --ink-faint:#7E7963;
+    --line:#3A3E2E; --line-strong:#4B5039;
+    --olive:#8C9760; --olive-bright:#A6B078;
+    --brass:#CBA050; --brass-soft:#332c19;
+    --oxide:#D26A4C;
+    --ok:#93B26C; --warn:#D6A441; --fail:#D26A4C;
+    --ok-bg:#242a1a; --warn-bg:#2f2919; --fail-bg:#2e2018;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+  }}
+  :root[data-theme="dark"]{
+    --ground:#15170F; --paper:#20231A; --paper-2:#272B1F; --sink:#1A1D14;
+    --ink:#E7E2CF; --ink-soft:#A49E86; --ink-faint:#7E7963;
+    --line:#3A3E2E; --line-strong:#4B5039;
+    --olive:#8C9760; --olive-bright:#A6B078;
+    --brass:#CBA050; --brass-soft:#332c19;
+    --oxide:#D26A4C;
+    --ok:#93B26C; --warn:#D6A441; --fail:#D26A4C;
+    --ok-bg:#242a1a; --warn-bg:#2f2919; --fail-bg:#2e2018;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground); color:var(--ink);
+    font-family:"Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height:1.5; margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:"Barlow Condensed", "Barlow", sans-serif; font-weight:700; margin:0; line-height:1.1; text-wrap:balance;}
+  .mono{font-family:"IBM Plex Mono", ui-monospace, monospace;}
+  button{font-family:inherit; cursor:pointer}
+  a{color:var(--olive-bright)}
+
+  .wrap{max-width:1220px; margin:0 auto; padding:0 20px 80px}
+
+  /* ---- Masthead ---- */
+  header.masthead{
+    border-bottom:2px solid var(--olive);
+    background:linear-gradient(180deg, var(--paper), var(--ground));
+  }
+  .masthead-inner{max-width:1220px; margin:0 auto; padding:18px 20px 14px; position:relative}
+  .eyebrow{
+    font-family:"Barlow Condensed",sans-serif; font-weight:600;
+    text-transform:uppercase; letter-spacing:.22em; font-size:12px;
+    color:var(--oxide);
+  }
+  h1.title{
+    font-size:clamp(30px, 5vw, 46px); letter-spacing:.03em; text-transform:uppercase;
+    margin:2px 0 4px;
+  }
+  .subtitle{color:var(--ink-soft); max-width:62ch; font-size:14.5px}
+  .ver{display:inline-block; vertical-align:middle; margin-left:12px; position:relative; top:-5px;
+    font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:400; letter-spacing:0; text-transform:none;
+    color:var(--ink-faint); border:1px solid var(--line-strong); border-radius:2px; padding:2px 7px}
+  .stencil-rule{height:6px; margin-top:12px; background:
+    repeating-linear-gradient(90deg, var(--olive) 0 22px, transparent 22px 30px);
+    opacity:.5}
+
+  .modes{display:flex; gap:0; margin-top:16px; border:1px solid var(--line-strong); width:max-content; border-radius:var(--radius); overflow:hidden}
+  .modes button{
+    background:var(--paper); border:0; padding:8px 20px; color:var(--ink-soft);
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:.1em; font-size:14px;
+  }
+  .modes button + button{border-left:1px solid var(--line-strong)}
+  .modes button[aria-selected="true"]{background:var(--olive); color:#F3EFE2}
+
+  .theme-toggle{
+    position:absolute; top:18px; right:20px;
+    background:var(--paper); border:1px solid var(--line-strong); color:var(--ink-soft);
+    border-radius:var(--radius); padding:6px 10px; font-size:12px; font-family:"Barlow Condensed",sans-serif;
+    text-transform:uppercase; letter-spacing:.1em;
+  }
+
+  /* ---- Command bar ---- */
+  .commandbar{
+    display:flex; flex-wrap:wrap; gap:18px 26px; align-items:flex-end;
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px; margin:22px 0; box-shadow:var(--shadow);
+  }
+  .field{display:flex; flex-direction:column; gap:5px}
+  .field label{
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; text-transform:uppercase;
+    letter-spacing:.14em; font-size:11px; color:var(--ink-faint);
+  }
+  select, input[type=number], input[type=text]{
+    font-family:"Barlow", sans-serif; font-size:14px; color:var(--ink);
+    background:var(--paper-2); border:1px solid var(--line-strong); border-radius:var(--radius);
+    padding:7px 9px;
+  }
+  input[type=number]{width:92px}
+  .collbar{display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin:-8px 0 22px;
+    padding:11px 14px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius)}
+  .collbar-lbl{font-family:"Barlow Condensed",sans-serif; font-weight:600; text-transform:uppercase;
+    letter-spacing:.14em; font-size:11px; color:var(--ink-faint); margin-right:2px}
+  .coll-chip{background:var(--paper-2); border:1px solid var(--line-strong); color:var(--ink-soft);
+    border-radius:var(--radius); padding:5px 11px; font-family:"Barlow Condensed",sans-serif; font-weight:600;
+    text-transform:uppercase; letter-spacing:.05em; font-size:12px; display:inline-flex; align-items:center; gap:6px}
+  .coll-chip::before{content:""; width:11px; height:11px; border:1px solid currentColor; border-radius:2px; flex:none; opacity:.55}
+  .coll-chip[aria-pressed="true"]{background:var(--olive); color:#F1EDDF; border-color:var(--olive)}
+  .coll-chip[aria-pressed="true"]::before{background:#F1EDDF; opacity:1}
+  .coll-chip.opt[aria-pressed="true"]{background:var(--brass); border-color:var(--brass); color:var(--paper)}
+  .coll-chip.fan[aria-pressed="true"]{background:var(--oxide); border-color:var(--oxide); color:var(--paper)}
+  .coll-chip:disabled{cursor:default}
+  .coll-chip.all{border-style:dashed}
+  .coll-chip.all::before{display:none}
+  .doctrine{
+    flex:1 1 320px; min-width:260px; border-left:3px solid var(--brass); padding-left:12px;
+  }
+  .doctrine b{font-family:"Barlow Condensed",sans-serif; letter-spacing:.02em; text-transform:uppercase; font-size:15px}
+  .doctrine p{margin:2px 0 0; font-size:13px; color:var(--ink-soft)}
+  .doctrine.briefing{border-left-color:var(--oxide)}
+  .doctrine.briefing .vc{display:block; margin-top:5px; font-size:12px; color:var(--ink-faint)}
+  .doctrine.briefing .orders{display:block; margin-top:5px; font-size:12.5px; color:var(--ink); font-weight:500}
+  .gauge-sub{margin-top:6px; font-size:11.5px; color:var(--ink-faint); font-family:"IBM Plex Mono",monospace}
+
+  /* ---- Builder grid ---- */
+  .builder{display:grid; grid-template-columns:1fr 384px; gap:26px; align-items:start}
+  @media (max-width:940px){ .builder{grid-template-columns:1fr} }
+
+  /* ---- Arsenal ---- */
+  .tabs{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
+  .tabs button{
+    background:var(--paper); border:1px solid var(--line-strong); color:var(--ink-soft);
+    padding:6px 12px; border-radius:var(--radius);
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:.08em; font-size:12.5px;
+  }
+  .tabs button[aria-selected="true"]{background:var(--olive); color:#F3EFE2; border-color:var(--olive)}
+
+  .cat-note{font-size:13px; color:var(--ink-soft); margin:-4px 0 8px; max-width:64ch}
+  .statleg{font-size:11.5px; color:var(--ink-faint); margin:0 0 14px; padding:7px 10px;
+    background:var(--paper-2); border:1px solid var(--line); border-radius:var(--radius); max-width:66ch}
+  .statleg b{color:var(--ink-soft)}
+
+  .unit{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:12px 14px; margin-bottom:9px; display:grid;
+    grid-template-columns:1fr auto; gap:4px 14px; align-items:start;
+  }
+  .unit h4{font-size:17px; letter-spacing:.01em}
+  .unit .tag{
+    display:inline-block; margin-left:8px; vertical-align:middle;
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10px;
+    text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint);
+    border:1px solid var(--line-strong); border-radius:2px; padding:1px 5px;
+  }
+  .unit .tag.tag-ext{color:var(--brass); border-color:var(--brass)}
+  .unit .tag.tag-fan{color:var(--oxide); border-color:var(--oxide)}
+  .unit .stat{grid-column:1; font-size:12.5px; color:var(--ink-soft); letter-spacing:.02em}
+  .unit .desc{grid-column:1; font-size:12.5px; color:var(--ink-faint); margin-top:2px}
+  .unit .price{
+    grid-row:1 / span 2; grid-column:2; text-align:right; align-self:center;
+  }
+  .unit .price .pts{font-family:"IBM Plex Mono",monospace; font-weight:500; font-size:20px; color:var(--ink)}
+  .unit .price .pts small{font-size:11px; color:var(--ink-faint)}
+  .add-btn{
+    margin-top:6px; background:var(--brass-soft); color:var(--brass);
+    border:1px solid var(--brass); border-radius:var(--radius);
+    padding:5px 12px; font-family:"Barlow Condensed",sans-serif; font-weight:600;
+    text-transform:uppercase; letter-spacing:.08em; font-size:12px;
+  }
+  .add-btn:hover{background:var(--brass); color:var(--paper)}
+  .add-btn:disabled{opacity:.4; cursor:not-allowed; background:var(--brass-soft); color:var(--brass)}
+
+  /* ---- Specialization panel ---- */
+  .spec-card{
+    border:1px solid var(--line); border-left:3px solid var(--brass); border-radius:var(--radius);
+    padding:12px 14px; margin-bottom:9px; background:var(--paper);
+  }
+  .spec-card.has{border-left-color:var(--ok)}
+  .spec-card h4{font-size:17px; text-transform:uppercase; letter-spacing:.03em; display:flex; align-items:baseline; gap:9px; flex-wrap:wrap}
+  .spec-card h4 .src{color:var(--ink-faint)}
+  .spec-card p{margin:4px 0 0; font-size:13px; color:var(--ink-soft)}
+  .spec-card .pt{font-family:"IBM Plex Mono",monospace; color:var(--brass); font-size:13px}
+  .spec-foot{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:9px}
+  .spec-chip{
+    background:var(--brass-soft); color:var(--brass); border:1px solid var(--brass);
+    border-radius:2px; padding:2px 7px; font-size:11.5px;
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; letter-spacing:.03em;
+  }
+
+  /* ---- Roster ---- */
+  .roster{position:sticky; top:14px}
+  @media (max-width:940px){ .roster{position:static} }
+  .roster-card{
+    background:var(--paper); border:1px solid var(--line-strong); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .roster-head{background:var(--olive); color:#F1EDDF; padding:12px 15px}
+  .roster-head input{
+    background:transparent; border:0; border-bottom:1px dashed rgba(241,237,223,.5);
+    color:#F1EDDF; font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:20px;
+    text-transform:uppercase; letter-spacing:.03em; width:100%; padding:2px 0;
+  }
+  .roster-head input:focus{outline:none; border-bottom-color:#F1EDDF}
+
+  .gauge{padding:12px 15px; border-bottom:1px solid var(--line)}
+  .gauge-nums{display:flex; justify-content:space-between; align-items:baseline; font-family:"IBM Plex Mono",monospace}
+  .gauge-nums .big{font-size:26px; font-weight:500}
+  .gauge-nums .lim{font-size:13px; color:var(--ink-faint)}
+  .bar{height:8px; background:var(--sink); border-radius:2px; margin-top:8px; overflow:hidden}
+  .bar span{display:block; height:100%; background:var(--olive-bright); transition:width .18s}
+  .bar span.over{background:var(--fail)}
+
+  .checks{padding:10px 15px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; gap:5px}
+  .check{display:flex; gap:8px; align-items:baseline; font-size:12.5px}
+  .check .dot{width:8px; height:8px; border-radius:50%; flex:none; position:relative; top:1px}
+  .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.fail{background:var(--fail)}
+  .check.ok{color:var(--ink-soft)} .check.warn{color:var(--warn)} .check.fail{color:var(--fail)}
+
+  .rlist{padding:6px 15px 14px; max-height:46vh; overflow-y:auto}
+  @media (max-width:940px){ .rlist{max-height:none} }
+  .rgroup-h{
+    font-family:"Barlow Condensed",sans-serif; font-weight:700; text-transform:uppercase;
+    letter-spacing:.14em; font-size:11px; color:var(--oxide);
+    margin:12px 0 5px; padding-bottom:3px; border-bottom:1px solid var(--line);
+  }
+  .ritem{padding:7px 0; border-bottom:1px dotted var(--line)}
+  .ritem-top{display:flex; justify-content:space-between; gap:8px; align-items:baseline}
+  .ritem-name{font-weight:600; font-size:14px}
+  .ritem-cost{font-family:"IBM Plex Mono",monospace; font-size:14px; flex:none}
+  .ritem-cfg{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; align-items:center}
+  .slot{
+    width:26px; height:26px; border:1px solid var(--line-strong); border-radius:2px;
+    background:var(--paper-2); font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:13px;
+    color:var(--ink-soft); display:flex; align-items:center; justify-content:center; padding:0;
+  }
+  .slot.rg{background:var(--paper-2)} .slot.el{background:#dfe6d0; color:var(--olive); border-color:var(--olive-bright)}
+  .slot.of{background:var(--brass-soft); color:var(--brass); border-color:var(--brass)}
+  .slot.em{opacity:.4}
+  :root[data-theme="dark"] .slot.el, :root:not([data-theme="light"]) .slot.el{background:#2b331f}
+  .ritem-cfg select{font-size:12px; padding:4px 6px; max-width:170px}
+  .qty{display:flex; align-items:center; border:1px solid var(--line-strong); border-radius:2px; overflow:hidden}
+  .qty button{background:var(--paper-2); border:0; width:24px; height:26px; font-size:15px; color:var(--ink-soft)}
+  .qty span{width:30px; text-align:center; font-family:"IBM Plex Mono",monospace; font-size:13px}
+  .x-btn{background:transparent; border:0; color:var(--fail); font-size:12px; font-family:"Barlow Condensed",sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:.06em; padding:2px 4px}
+  .mini-note{font-size:11.5px; color:var(--ink-faint); margin-top:3px}
+
+  .roster-actions{padding:12px 15px; display:flex; flex-wrap:wrap; gap:7px; border-top:1px solid var(--line-strong); background:var(--paper-2)}
+  .roster-actions button{
+    background:var(--paper); border:1px solid var(--line-strong); color:var(--ink-soft);
+    border-radius:var(--radius); padding:6px 11px; font-family:"Barlow Condensed",sans-serif;
+    font-weight:600; text-transform:uppercase; letter-spacing:.07em; font-size:11.5px;
+  }
+  .roster-actions button:hover{border-color:var(--olive); color:var(--ink)}
+  .roster-actions button.primary{background:var(--olive); color:#F1EDDF; border-color:var(--olive)}
+
+  .empty-note{padding:24px 15px; text-align:center; color:var(--ink-faint); font-size:13px}
+
+  /* ---- Modal / export ---- */
+  dialog{
+    border:1px solid var(--line-strong); border-radius:var(--radius); padding:0;
+    background:var(--paper); color:var(--ink); max-width:640px; width:92vw; box-shadow:var(--shadow);
+  }
+  dialog::backdrop{background:rgba(20,22,15,.55)}
+  .dlg-h{background:var(--olive); color:#F1EDDF; padding:11px 16px; display:flex; justify-content:space-between; align-items:center}
+  .dlg-h h3{text-transform:uppercase; letter-spacing:.04em; font-size:17px}
+  .dlg-b{padding:16px}
+  .dlg-b textarea{width:100%; min-height:280px; font-family:"IBM Plex Mono",monospace; font-size:12px;
+    background:var(--paper-2); color:var(--ink); border:1px solid var(--line-strong); border-radius:var(--radius); padding:10px}
+  .dlg-b .saved-list{display:flex; flex-direction:column; gap:6px; margin-top:4px}
+  .saved-row{display:flex; justify-content:space-between; align-items:center; gap:10px; border:1px solid var(--line); border-radius:var(--radius); padding:7px 10px}
+  .saved-row button{font-size:11px; padding:4px 9px; border-radius:2px; border:1px solid var(--line-strong); background:var(--paper-2); font-family:"Barlow Condensed",sans-serif; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft)}
+
+  /* ---- Compendium ---- */
+  .comp section{margin:30px 0}
+  .comp h2{
+    font-size:24px; text-transform:uppercase; letter-spacing:.05em; color:var(--olive);
+    border-bottom:2px solid var(--olive); padding-bottom:4px; margin-bottom:6px;
+  }
+  .comp .lead{color:var(--ink-soft); font-size:14px; max-width:74ch; margin:6px 0 14px}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius)}
+  table.ref{border-collapse:collapse; width:100%; font-size:13px; min-width:560px}
+  table.ref th, table.ref td{text-align:left; padding:7px 10px; border-bottom:1px solid var(--line)}
+  table.ref thead th{
+    background:var(--paper-2); font-family:"Barlow Condensed",sans-serif; text-transform:uppercase;
+    letter-spacing:.1em; font-size:11px; color:var(--ink-faint); position:sticky; top:0;
+  }
+  table.ref tbody tr:hover{background:var(--paper)}
+  table.ref .num{font-family:"IBM Plex Mono",monospace; text-align:right; white-space:nowrap}
+  table.ref .src{font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint)}
+
+  .callout{
+    background:var(--paper); border:1px solid var(--line); border-top:3px solid var(--olive);
+    border-radius:var(--radius); padding:14px 16px; font-size:13px; color:var(--ink-soft);
+  }
+  .callout b{color:var(--ink)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+  @media (max-width:680px){ .grid2{grid-template-columns:1fr} }
+
+  footer.foot{max-width:1220px; margin:40px auto 0; padding:18px 20px; border-top:1px solid var(--line); color:var(--ink-faint); font-size:12px}
+
+  /* ---- Review sheet ---- */
+  .sheet{max-width:980px; margin:0 auto; background:var(--paper); border:1px solid var(--line-strong); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+  .sheet-actions{display:flex; gap:8px; justify-content:flex-end; padding:12px 18px; background:var(--paper-2); border-bottom:1px solid var(--line)}
+  .sheet-actions button{
+    background:var(--paper); border:1px solid var(--line-strong); color:var(--ink-soft);
+    border-radius:var(--radius); padding:6px 13px; font-family:"Barlow Condensed",sans-serif;
+    font-weight:600; text-transform:uppercase; letter-spacing:.07em; font-size:12px;
+  }
+  .sheet-actions button#pdfBtn{background:var(--olive); color:#F1EDDF; border-color:var(--olive)}
+  .sheet-head{background:var(--olive); color:#F1EDDF; padding:18px 24px}
+  .sheet-head h2{font-size:clamp(22px,3.5vw,30px); text-transform:uppercase; letter-spacing:.03em}
+  .sheet-meta{display:flex; flex-wrap:wrap; gap:4px 20px; margin-top:7px; font-size:12px;
+    color:rgba(241,237,223,.88); font-family:"Barlow Condensed",sans-serif; text-transform:uppercase; letter-spacing:.07em; font-weight:600}
+  .sheet-body{padding:18px 24px 30px}
+  .sheet-brief{border-left:3px solid var(--oxide); padding-left:13px; margin-bottom:14px; font-size:12.5px; color:var(--ink-soft); line-height:1.7}
+  .sheet-brief b{color:var(--ink)}
+  .sheet-check{display:flex; flex-wrap:wrap; gap:5px 16px; margin:10px 0}
+  .sheet-check .check{font-size:11.5px}
+  .comp-tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:8px; margin:14px 0 6px}
+  .comp-tile{border:1px solid var(--line); border-radius:var(--radius); padding:9px 8px; text-align:center; background:var(--paper-2)}
+  .comp-tile .n{font-family:"IBM Plex Mono",monospace; font-size:22px; font-weight:500; line-height:1}
+  .comp-tile .l{font-size:9.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-faint); font-family:"Barlow Condensed",sans-serif; font-weight:600; margin-top:3px}
+  .sheet h3{font-size:15px; text-transform:uppercase; letter-spacing:.09em; color:var(--olive);
+    border-bottom:1px solid var(--line-strong); padding-bottom:3px; margin:20px 0 4px}
+  .sheet-row{display:grid; grid-template-columns:1fr auto; gap:3px 16px; padding:9px 0; border-bottom:1px dotted var(--line)}
+  .sheet-row .nm{font-weight:600; font-size:14px}
+  .sheet-row .ct{grid-row:1; grid-column:2; font-family:"IBM Plex Mono",monospace; font-size:14px; align-self:start; white-space:nowrap}
+  .sheet-break{grid-column:1 / -1; display:flex; flex-direction:column; gap:2px; margin-top:2px}
+  .sheet-break > div{display:flex; justify-content:space-between; gap:14px; align-items:baseline;
+    font-size:11.5px; color:var(--ink-faint); padding-left:13px; border-left:2px solid var(--line)}
+  .sheet-break > div > span:first-child{line-height:1.45}
+  .sheet-break > div > span:last-child{font-family:"IBM Plex Mono",monospace; flex:none; color:var(--ink-soft)}
+  .sheet-total{display:flex; justify-content:space-between; align-items:baseline; margin-top:18px; padding-top:11px;
+    border-top:2px solid var(--olive); font-family:"Barlow Condensed",sans-serif; text-transform:uppercase; letter-spacing:.07em; font-weight:700}
+  .sheet-total .big{font-family:"IBM Plex Mono",monospace; font-size:21px; font-weight:500}
+  .sheet-hint{font-size:11.5px; color:var(--ink-faint); margin-top:14px}
+
+  :focus-visible{outline:2px solid var(--brass); outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+
+  /* ---- Print (Review sheet only → "Save as PDF") ---- */
+  @media print{
+    body{background:#fff; color:#000}
+    header.masthead, footer.foot, .theme-toggle, .modes,
+    #view-build, #view-comp, .sheet-actions, .sheet-hint{display:none !important}
+    #view-review{display:block !important}
+    .wrap{padding:0; max-width:none}
+    .sheet{box-shadow:none; border:0; max-width:none; border-radius:0}
+    .sheet-head{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .sheet h3{break-after:avoid}
+    .sheet-row{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <button class="theme-toggle" id="themeBtn" type="button">Light / dark</button>
+    <div class="eyebrow">Fan-made points &amp; army-builder system</div>
+    <h1 class="title">Tide of Iron <span style="color:var(--oxide)">·</span> Battle Builder<span class="ver" id="verBadge"></span></h1>
+    <p class="subtitle">A balanced army-builder in the spirit of Bolt Action, Flames of War and Warhammer — built on the units from <i>Tide of Iron</i> and every expansion. ToI has no official points system; this is a house rule.</p>
+    <div class="modes" role="tablist">
+      <button role="tab" id="tab-build" aria-selected="true">Builder</button>
+      <button role="tab" id="tab-review" aria-selected="false">Review</button>
+      <button role="tab" id="tab-comp" aria-selected="false">Compendium</button>
+    </div>
+    <div class="stencil-rule" aria-hidden="true"></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ======================= BUILDER ======================= -->
+  <div id="view-build">
+    <div class="commandbar">
+      <div class="field">
+        <label for="nationSel">Nation</label>
+        <select id="nationSel"></select>
+      </div>
+      <div class="field">
+        <label for="scenarioSel">Scenario</label>
+        <select id="scenarioSel"></select>
+      </div>
+      <div class="field" id="roleWrap" hidden>
+        <label for="roleSel">Your role</label>
+        <select id="roleSel">
+          <option value="attacker">Attacker</option>
+          <option value="defender">Defender</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="limitSel">Base points</label>
+        <select id="limitSel">
+          <option value="400">400 — Patrol</option>
+          <option value="700" selected>700 — Standard</option>
+          <option value="1000">1000 — Company action</option>
+          <option value="1500">1500 — Large battle</option>
+          <option value="custom">Custom…</option>
+        </select>
+      </div>
+      <div class="field" id="customWrap" hidden>
+        <label for="customLimit">Custom points</label>
+        <input type="number" id="customLimit" min="100" max="6000" step="25" value="700" />
+      </div>
+      <div class="doctrine" id="doctrineBox"></div>
+      <div class="doctrine briefing" id="briefingBox"></div>
+    </div>
+
+    <div class="collbar" id="collBar" role="group" aria-label="Which sets you can field units from"></div>
+
+    <div class="builder">
+      <div class="arsenal">
+        <div class="tabs" id="catTabs" role="tablist"></div>
+        <p class="cat-note" id="catNote"></p>
+        <p class="statleg" id="statLeg"></p>
+        <div id="unitList"></div>
+      </div>
+
+      <aside class="roster">
+        <div class="roster-card">
+          <div class="roster-head">
+            <input type="text" id="listName" value="New force" aria-label="Force name" />
+          </div>
+          <div class="gauge">
+            <div class="gauge-nums">
+              <span class="big mono" id="ptsUsed">0</span>
+              <span class="lim mono">/ <span id="ptsLimit">700</span> pts</span>
+            </div>
+            <div class="bar"><span id="ptsBar" style="width:0%"></span></div>
+            <div class="gauge-sub" id="gaugeSub"></div>
+          </div>
+          <div class="checks" id="checks"></div>
+          <div class="rlist" id="rosterList"></div>
+          <div class="roster-actions">
+            <button type="button" id="btnAuto" class="primary">⚙ Auto-fill</button>
+            <button type="button" id="btnSave">Save</button>
+            <button type="button" id="btnLoad">Load</button>
+            <button type="button" id="btnNew">New</button>
+            <button type="button" id="btnReview">Review</button>
+            <button type="button" id="btnExport">Export</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ======================= REVIEW ======================= -->
+  <div id="view-review" hidden></div>
+
+  <!-- ======================= COMPENDIUM ======================= -->
+  <div id="view-comp" class="comp" hidden></div>
+
+  <footer class="foot" id="footNote"></footer>
+</div>
+
+<dialog id="dlg">
+  <div class="dlg-h"><h3 id="dlgTitle">Title</h3><button type="button" id="dlgClose" class="x-btn" style="color:#F1EDDF">Close</button></div>
+  <div class="dlg-b" id="dlgBody"></div>
+</dialog>
+
+<script>
+"use strict";
+
+/* Version = 1.<number of revisions since the first release>.
+   Bump the last entry's number and add a CHANGELOG line on every revision. */
+const APP_VERSION = '1.10';
+const CHANGELOG = [
+  ['1.0', 'First release — builder, order-of-battle checks, compendium.'],
+  ['1.1', 'Scenario-driven: 9 board-wargame scenarios set effective points, fortification, reserves and the checklist.'],
+  ['1.2', 'Verified every unit against the rulebooks; split the roster into In-the-game / House-rule / Fan tiers.'],
+  ['1.3', 'Whole app translated to English; Support strategy cards replaced by a Specializations panel.'],
+  ['1.4', 'Review sheet + "Save as PDF" print view.'],
+  ['1.5', 'Itemised purchase lines (figures, tokens, transport priced individually) and an Auto-fill generator.'],
+  ['1.6', 'Renamed to Tide of Iron · Battle Builder.'],
+  ['1.7', 'Version number and changelog added.'],
+  ['1.8', 'Separate anti-personnel and anti-vehicle profiles (range + firepower) on every unit, shown as "Inf R/F · Veh R/F", with a stat-line legend.'],
+  ['1.9', 'Collections row — tick which sets you own (All expansions, Days of the Fox, Normandy, Fury of the Bear, Stalingrad, Tools of War, house-rule, fan) to control which units you can field.'],
+  ['1.10', 'Confirmed against the rulebook: a squad with a heavy infantry weapon may never take a specialization token — enforced and cited in the compendium.'],
+];
+
+/* =====================================================================
+   DATA — units, stats and points.
+   Sources: Tide of Iron core game + Days of the Fox + Designer Series Vol.1
+   + Normandy + Fury of the Bear + Stalingrad + Next Wave / Tools of War (1A),
+   unit values cross-checked against commandsandcolors.net/tideofiron.
+   Stat shorthand (matches the ToI unit cards, which list two target profiles):
+     Inf R/F  = range / firepower when firing at infantry (squads)
+     Veh R/F  = range / firepower when firing at vehicles
+     Mv       = movement · Armor = vehicle armor value (AV)
+   Firepower = black attack dice (hit on 4–6; 6 only at long range, 3–6 close).
+   ===================================================================== */
+
+const FIG = {
+  regular: { key:'regular', label:'Regular', short:'R', cost:5,  stat:'Inf 4/1 · Veh 1/1 · Mv 4' },
+  elite:   { key:'elite',   label:'Elite',   short:'E', cost:9,  stat:'Inf 4/2 · Veh 1/1 · Mv 4 · Battle-Hardened' },
+  officer: { key:'officer', label:'Officer', short:'O', cost:13, stat:'Inf 4/1 · Veh 1/1 · Mv 4 · Rally, +move, +cover' },
+};
+const STAT_LEGEND = 'Stat line — <b>Inf R/F</b> = range / firepower vs infantry · <b>Veh R/F</b> = range / firepower vs vehicles · <b>Mv</b> = movement · <b>Armor</b> = vehicle armor. Firepower = attack dice; range in spaces.';
+
+/* Specialization tokens — the small pieces you attach to an infantry squad
+   during setup. One per squad, never on a weapon team. */
+const SPECS = [
+  { key:'antitank',    name:'Anti-Tank',    src:'Base',           pt:12, rule:'Against vehicles the squad fires at range 3 (instead of the normal 1) with +3 firepower — even when supporting another unit’s attack.' },
+  { key:'flamethrower',name:'Flamethrower', src:'Base',           pt:14, rule:'Attack an adjacent space (range 1) only: +2 firepower and the target gets −5 cover (min 0). Armor still applies, but the flames bite.' },
+  { key:'engineer',    name:'Engineer',     src:'Base',           pt:8,  rule:'Dig an entrenchment (fatigues the squad). Clear razor wire for 2 MP. Lay smoke. Not slowed by wire.' },
+  { key:'medic',       name:'Medic',        src:'Base',           pt:8,  rule:'Bandage: this squad and squads in its space get +1 cover vs normal attacks. Heal: fatigue to roll 4–6 and return a regular infantry figure.' },
+  { key:'recon',       name:'Recon',        src:'Days of the Fox',pt:7,  rule:'Stamina: +1 movement (on top of the leader bonus). Stealth: cannot be attacked at long range.' },
+  { key:'alpha',       name:'Alpha Unit (experience)', src:'Days of the Fox', pt:9, rule:'Elite squad, starts with 1 star; upgrades after a solo fire action scoring 2+ hits. +1 firepower vs infantry per star (Bronze / Silver Star / Medal of Honor tokens).' },
+  { key:'bravo',       name:'Bravo Unit (experience)', src:'Days of the Fox', pt:9, rule:'Elite squad, starts with 1 star; upgrades after surviving an attack of 2+ hits. +1 cover per star.' },
+  { key:'demolition',  name:'Demolitions',  src:'Normandy',       pt:10, rule:'Place a charge (2 MP during an Advance). Detonate as an action or via Op Fire: each charge deals 3 automatic hits to every unit in the space / pillbox (roll armor & cover).' },
+  { key:'expert',      name:'Expert',       src:'Fury of the Bear',pt:13, rule:'Adaptability: for each figure in the squad, re-roll one attack die of your choice when the squad attacks (no die re-rolled twice).' },
+  { key:'saboteur',    name:'Saboteur',     src:'Fury of the Bear',pt:7,  rule:'Takes all neutral + own-nation Sabotage cards. Play them to disrupt the enemy Strategy decks near enemy command objectives.' },
+];
+const SPEC_BY_KEY = Object.fromEntries(SPECS.map(s=>[s.key,s]));
+
+/* Doctrines are an OPTIONAL house rule — Tide of Iron has no official
+   national rules. Ignore them for a pure card-driven game. */
+const DOCTRINES = {
+  usa:     { name:'Combined Arms',     text:'All transports cost 20% less. Deep pool of armor and specializations.' },
+  germany: { name:'Kampfkraft',        text:'One rifle squad may deploy with elite figures for −3 pts. Heavy-tank cap rises to 1 per 500 pts.' },
+  britain: { name:'Steady Under Fire', text:'Each round, the first of your squads that would be pinned is not pinned.' },
+  soviet:  { name:'Not One Step Back', text:'Regular figures cost 4 pts. Mass Assault: up to two regular squads may activate together. Elite (Guards) max 1 per 500 pts.' },
+  japan:   { name:'Banzai',            text:'Assault attacks +2 firepower; squads ignore the first pin while adjacent to the enemy. Light and medium tanks only.' },
+};
+
+/* =====================================================================
+   SCENARIOS — classic board-wargame setups (Bolt Action / Flames of War /
+   generic). Each scenario sets the effective points, whether fortification
+   is allowed, reserves, deployment and victory condition — and drives the
+   order-of-battle checklist in the right panel.
+   asym: true = attacker/defender each with their own points multiplier.
+   fort: share of effective points allowed on fortification (0 = none).
+   reserves: share of the force that MUST start off the board.
+   ===================================================================== */
+const SCENARIOS = [
+  { key:'pitched', name:'Pitched Battle', src:'Free-for-All', asym:false,
+    fort:0, reserves:0,
+    deploy:'Full deployment in your own zone along the board edge. No reserves.',
+    vc:'Control the most command objectives at game end.',
+    orders:'Anything goes within the points limit — a balanced mix of firepower, armor and movement.' },
+
+  { key:'meeting', name:'Meeting Engagement', src:'Encounter', asym:false,
+    fort:0, reserves:0.5,
+    deploy:'Narrow deployment zone. Half your points start in reserve and arrive from round 2 along your board edge.',
+    vc:'Control the central command objective at game end.',
+    orders:'Fast units must reach the center first; keep a solid second wave in reserve.' },
+
+  { key:'attrition', name:'Maximum Attrition', src:'Kill Points', asym:false,
+    fort:0.10, reserves:0,
+    deploy:'Full deployment in your own zone. Light field fortification allowed (max 10%).',
+    vc:'Most enemy units destroyed (kill points) at the time limit.',
+    orders:'Avoid expensive single units you cannot afford to lose. Fire superiority over maneuver.' },
+
+  { key:'flank', name:'Envelopment', src:'Flank Attack', asym:false,
+    fort:0.10, reserves:0.5,
+    deploy:'Half your force deploys normally; the other half enters from a side edge (flank) from round 2.',
+    vc:'Control the enemy rear command objective — or the most objectives overall.',
+    orders:'Split the force: a holding front and a mobile flanking element (recon, half-tracks, light tanks).' },
+
+  { key:'demolition', name:'Demolition', src:'Sabotage', asym:false,
+    fort:0.15, reserves:0,
+    deploy:'Each side has one demolition objective in its own zone that the enemy must destroy. Field fortification allowed (max 15%).',
+    vc:'Destroy the enemy objective (needs a Demolitions squad or officer in the space) and keep your own.',
+    orders:'Bring at least one Demolitions specialization and fast transport to carry it forward.' },
+
+  { key:'attack', name:'Attack & Defend', src:'Hasty Attack', asym:true,
+    attacker:{ mult:1.00, fort:0, reserves:0.25,
+      deploy:'Deploy in the attack zone. A quarter of the force in reserve as a second wave.',
+      orders:'Weight your points toward mobile units and smoke to break the defense.' },
+    defender:{ mult:0.75, fort:0.25, freeEntrench:2, reserves:0,
+      deploy:'Deploy on and around the objectives. Two free entrenchments. Up to 25% on fortifications.',
+      orders:'Dig in around the objective. Anti-tank guns and machine-gun teams in cover.' },
+    vc:'The attacker must control at least one objective in the defense zone at game end.',
+    orders:'' },
+
+  { key:'hold', name:'Hold Until Relieved', src:'Last Stand', asym:true,
+    attacker:{ mult:1.30, fort:0, reserves:0,
+      deploy:'Surrounds the defense zone. Full deployment.',
+      orders:'You have the points advantage — bypass and overwhelm. Time favors the defender.' },
+    defender:{ mult:0.60, fort:0.30, freeEntrench:3, reserves:0.33,
+      deploy:'Small force mid-table around one objective. Three free entrenchments, up to 30% fortifications. A third of the force arrives as relief from round 4.',
+      orders:'It is all about holding the central objective until relief arrives.' },
+    vc:'The defender controls the central objective at game end = defensive win.',
+    orders:'' },
+
+  { key:'breakthrough', name:'Breakthrough', src:'Break Out', asym:true,
+    attacker:{ mult:1.15, fort:0, reserves:0,
+      deploy:'Deploy along your board edge. No reserves.',
+      orders:'At least 3 mobile units (Mv 6+, transport or recon) — you must move units OFF the far edge.' },
+    defender:{ mult:0.90, fort:0.20, freeEntrench:2, reserves:0.25,
+      deploy:'Spread thin to cover the whole board width. Two free entrenchments. A quarter in mobile reserve.',
+      orders:'You cannot be strong everywhere — cover flat and keep a mobile fire-brigade reserve.' },
+    vc:'The attacker scores for every unit that leaves the defender rear edge.',
+    orders:'' },
+
+  { key:'beachhead', name:'Beachhead', src:'No Retreat', asym:true,
+    attacker:{ mult:1.50, fort:0, reserves:0.33,
+      deploy:'Deploy in a narrow landing zone. A third of the force arrives as later waves.',
+      orders:'Huge points advantage, but a cramped deployment and a dug-in defender. Engineers, demolitions and smoke.' },
+    defender:{ mult:0.70, fort:0.35, freeEntrench:3, bunker:true, reserves:0.25,
+      deploy:'Bunker line along the coast. Three free entrenchments + bunker allowed, up to 35% fortifications. 25% counter-attack reserve.',
+      orders:'Pin the attacker on the beach. Commit the counter-attack reserve (tanks) when the beachhead wavers.' },
+    vc:'The attacker must clear the defense zone; the defender wins by holding to the time limit.',
+    orders:'' },
+];
+function scenByKey(k){ return SCENARIOS.find(s=>s.key===k) || SCENARIOS[0]; }
+
+/* Transport lists per nation. tier: core = in the physical box · ext =
+   house rule / supplement (not in the box) · fan = fan expansion. */
+const TRANSPORTS = {
+  usa: [
+    { id:'us_ht',   name:'M3A1 Half-track',      src:'Base', tier:'core', pt:25, stat:'Inf 5/4 · Veh 3/2 · Mv 7 · Armor 1 · Transport 1', cap:1 },
+    { id:'us_truck',name:'GMC CCKW 353 truck',   src:'Base', tier:'core', pt:10, stat:'no attack · Mv 6 · Transport 2', cap:2 },
+  ],
+  germany: [
+    { id:'de_ht',   name:'Sd.Kfz. 251 Half-track', src:'Base', tier:'core', pt:25, stat:'Inf 5/4 · Veh 3/2 · Mv 7 · Armor 1 · Transport 1', cap:1 },
+    { id:'de_truck',name:'Opel Blitz 3-t truck',   src:'Base', tier:'core', pt:10, stat:'no attack · Mv 6 · Transport 2', cap:2 },
+  ],
+  britain: [
+    { id:'gb_uc',   name:'Universal (Bren) Carrier', src:'Days of the Fox', tier:'core', pt:18, stat:'Inf 5/3 · Veh 3/1 · Mv 7 · Armor 1 · Transport 1 · recon', cap:1 },
+    { id:'gb_truck',name:'Bedford truck',            src:'House rule',      tier:'ext',  pt:10, stat:'no attack · Mv 6 · Transport 2', cap:2 },
+  ],
+  soviet: [
+    { id:'su_truck',name:'GMC truck (Soviet colours)',       src:'Fury of the Bear', tier:'core', pt:10, stat:'no attack · Mv 6 · Transport 2', cap:2 },
+    { id:'su_ht',   name:'M3A1 Half-track (Soviet colours)', src:'Fury of the Bear', tier:'core', pt:25, stat:'Inf 5/4 · Veh 3/2 · Mv 7 · Armor 1 · Transport 1', cap:1 },
+  ],
+  japan: [
+    { id:'jp_truck',name:'Type 94 truck',           src:'fan: Tail of the Dragon', tier:'fan', pt:10, stat:'no attack · Mv 6 · Transport 2', cap:2 },
+    { id:'jp_lvt',  name:'LVT-4 (vs USMC)',         src:'fan: Tail of the Dragon', tier:'fan', pt:22, stat:'Inf 4/3 · Veh 1/1 · Mv 6 · Armor 1 · Transport 1 · amphibious', cap:1 },
+  ],
+};
+
+/* Squad templates. kind: command | rifle | elite | mg | mortar.
+   ToI uses generic regular / elite / officer figures — not named formations. */
+function stdSquads(nat, src, names){
+  return [
+    { id:nat+'_cmd',  cat:'command', kind:'command', name:'Command Squad', src,
+      stat:'Command squad · 1 Officer + up to 3 figures', desc:'Rally, Fast Recovery, +1 movement and +1 cover vs suppressive fire for the squad.' },
+    { id:nat+'_rifle',cat:'infantry',kind:'rifle',   name:'Rifle Squad', src,
+      stat:'4 figure slots · '+FIG.regular.stat, desc:'The backbone. May carry one specialization token (not if it has a heavy weapon).' },
+    { id:nat+'_elite',cat:'infantry',kind:'elite',   name:names.elite, src,
+      stat:'4 figure slots · '+FIG.elite.stat, desc:'Battle-Hardened: each figure gives +1 cover vs suppressive fire.' },
+    { id:nat+'_mg',   cat:'weapons', kind:'mg',      name:'Machine Gun Team', src,
+      stat:'Inf 5/3 · Veh 3/2 · Mv 4 · 2-crew · Heavy Weapon', desc:'Rapid Op Fire. Heavy weapon: no Fire &amp; Movement or Assault. No specialization. (German MG: Inf 5/4.)' },
+    { id:nat+'_mortar',cat:'weapons',kind:'mortar',  name:'Mortar Team', src,
+      stat:'Inf 8/4 · Veh 8/2 · Mv 4 · 2-crew · area / indirect', desc:'Area attack (suppressive FP 4, normal FP 2), indirect fire (no LOS needed), minimum range 1, no Op Fire.' },
+  ];
+}
+
+const NATIONS = {
+  usa: {
+    label:'USA', doctrine:DOCTRINES.usa,
+    squads: stdSquads('usa', 'Base', { elite:'Elite Infantry' }),
+    vehicles: [
+      { id:'us_sherman', name:'M4A1 Sherman',        src:'Base',       tier:'core', pt:75,  stat:'Inf 5/6 · Veh 6/8 · Mv 6 · Armor 4 · Concussive', class:'med' },
+      { id:'us_m10',     name:'M10 Wolverine',       src:'Normandy',   tier:'core', pt:85,  stat:'Inf 5/6 · Veh 7/10 · Mv 6 · Armor 4 · Penetration, open top', class:'td' },
+      { id:'us_stuart',  name:'M5A1 Stuart',         src:'House rule', tier:'ext',  pt:45,  stat:'Inf 5/5 · Veh 4/5 · Mv 7 · Armor 3', class:'light' },
+      { id:'us_e8',      name:'M4A3E8 "Easy Eight"', src:'House rule', tier:'ext',  pt:95,  stat:'Inf 5/6 · Veh 6/9 · Mv 6 · Armor 4', class:'med' },
+      { id:'us_pershing',name:'M26 Pershing',        src:'House rule', tier:'ext',  pt:130, stat:'Inf 5/7 · Veh 7/12 · Mv 5 · Armor 5 · thick armor', class:'heavy' },
+    ],
+    guns: [
+      { id:'us_57',  name:'M1 57 mm anti-tank gun', src:'Days of the Fox', tier:'core', pt:32, stat:'Inf 5/4 · Veh 7/9 · Armor 2 · Equipment · fragile' },
+    ],
+  },
+  germany: {
+    label:'Germany', doctrine:DOCTRINES.germany,
+    squads: stdSquads('germany', 'Base', { elite:'Elite Infantry' }),
+    vehicles: [
+      { id:'de_pz4',   name:'Panzer IV',             src:'Base',           tier:'core', pt:70,  stat:'Inf 5/6 · Veh 8/10 · Mv 6 · Armor 4', class:'med' },
+      { id:'de_tiger', name:'Panzer VI Tiger I',     src:'Base',           tier:'core', pt:145, stat:'Inf 5/6 · Veh 8/13 · Mv 5 · Armor 6 · thick armor', class:'heavy' },
+      { id:'de_pz3',   name:'Panzer III',            src:'Days of the Fox',tier:'core', pt:55,  stat:'Inf 5/6 · Veh 6/6 · Mv 6 · Armor 3', class:'light' },
+      { id:'de_panther',name:'Panzer V Panther',     src:'Days of the Fox',tier:'core', pt:115, stat:'Inf 5/6 · Veh 8/12 · Mv 7 · Armor 5 · thick armor', class:'med' },
+      { id:'de_stug',  name:'StuG III Ausf. G',      src:'Normandy',       tier:'core', pt:65,  stat:'Inf 5/6 · Veh 6/9 · Mv 6 · Armor 4 · no turret', class:'td' },
+      { id:'de_jpz4',  name:'Jagdpanzer IV',         src:'Normandy',       tier:'core', pt:80,  stat:'Inf 5/6 · Veh 6/10 · Mv 6 · Armor 4 · low profile', class:'td' },
+      { id:'de_king',  name:'Tiger II (King Tiger)', src:'Normandy',       tier:'core', pt:185, stat:'Inf 5/6 · Veh 9/13 · Mv 5 · Armor 6 · extra thick armor', class:'heavy' },
+      { id:'de_stuig', name:'StuIG 33B',             src:'Stalingrad / Tools of War', tier:'ext', pt:70, stat:'Inf 4/9 · Veh 4/6 · Mv 5 · Armor 4 · heavy assault gun, short range', class:'td' },
+      { id:'de_marder',name:'Marder III',            src:'House rule',     tier:'ext',  pt:55,  stat:'Inf 5/5 · Veh 7/10 · Mv 6 · Armor 1 · open top, fragile', class:'td' },
+      { id:'de_jpanther',name:'Jagdpanther',         src:'House rule',     tier:'ext',  pt:130, stat:'Inf 5/6 · Veh 8/13 · Mv 6 · Armor 5 · thick armor', class:'td' },
+    ],
+    guns: [
+      { id:'de_flak',  name:'8.8 cm Flak 36',  src:'Days of the Fox',  tier:'core', pt:55, stat:'Inf 5/4 · Veh 9/13 · Armor 2 · Equipment · dual-purpose' },
+      { id:'de_pak40', name:'7.5 cm PaK 40',   src:'Fury of the Bear', tier:'core', pt:38, stat:'Inf 5/3 · Veh 7/10 · Armor 2 · Equipment · fragile' },
+      { id:'de_pak38', name:'5 cm PaK 38',     src:'House rule',       tier:'ext',  pt:28, stat:'Inf 5/3 · Veh 6/7 · Armor 2 · Equipment · fragile' },
+    ],
+  },
+  britain: {
+    label:'Britain', doctrine:DOCTRINES.britain,
+    squads: stdSquads('britain', 'Days of the Fox', { elite:'Elite Infantry' }),
+    vehicles: [
+      { id:'gb_matilda', name:'Matilda II',       src:'Days of the Fox',   tier:'core', pt:70,  stat:'Inf 5/5 · Veh 6/6 · Mv 4 · Armor 5 · thick armor, slow', class:'med' },
+      { id:'gb_crusader',name:'Crusader',         src:'Days of the Fox',   tier:'core', pt:50,  stat:'Inf 5/5 · Veh 6/6 · Mv 7 · Armor 3 · fast', class:'light' },
+      { id:'gb_firefly', name:'Sherman V Firefly',src:'Tools of War (1A)',  tier:'ext',  pt:105, stat:'Inf 5/6 · Veh 7/12 · Mv 6 · Armor 4 · 17-pdr', class:'med' },
+      { id:'gb_grant',   name:'M3 Grant',         src:'House rule',         tier:'ext',  pt:60,  stat:'Inf 5/6 · Veh 6/7 · Mv 6 · Armor 3', class:'med' },
+      { id:'gb_churchill',name:'Churchill',       src:'House rule',         tier:'ext',  pt:82,  stat:'Inf 5/5 · Veh 6/7 · Mv 4 · Armor 5 · thick armor', class:'med' },
+      { id:'gb_cromwell',name:'Cromwell',         src:'House rule',         tier:'ext',  pt:80,  stat:'Inf 5/6 · Veh 6/8 · Mv 7 · Armor 4 · fast', class:'med' },
+    ],
+    guns: [
+      { id:'gb_6pdr', name:'QF 6-pounder anti-tank gun',  src:'Days of the Fox',   tier:'core', pt:32, stat:'Inf 5/4 · Veh 7/9 · Armor 2 · Equipment · fragile' },
+      { id:'gb_2pdr', name:'QF 2-pounder anti-tank gun',  src:'Tools of War (1A)', tier:'ext',  pt:20, stat:'Inf 5/3 · Veh 6/6 · Armor 2 · Equipment · fragile' },
+      { id:'gb_17pdr',name:'QF 17-pounder anti-tank gun', src:'House rule',        tier:'ext',  pt:45, stat:'Inf 5/4 · Veh 7/12 · Armor 2 · Equipment · fragile' },
+    ],
+  },
+  soviet: {
+    label:'Soviet Union', doctrine:DOCTRINES.soviet,
+    squads: stdSquads('soviet', 'Fury of the Bear', { elite:'Guards Infantry (elite)' }),
+    vehicles: [
+      { id:'su_t3476', name:'T-34/76',           src:'Fury of the Bear', tier:'core', pt:80,  stat:'Inf 5/6 · Veh 6/9 · Mv 7 · Armor 4 · sloped armor', class:'med' },
+      { id:'su_kv1',   name:'KV-1',              src:'Fury of the Bear', tier:'core', pt:105, stat:'Inf 5/6 · Veh 6/8 · Mv 5 · Armor 5 · thick armor', class:'heavy' },
+      { id:'su_su122', name:'SU-122 assault gun',src:'Fury of the Bear', tier:'core', pt:75,  stat:'Inf 5/7 · Veh 5/8 · Mv 6 · Armor 4 · howitzer', class:'td' },
+      { id:'su_t70',   name:'T-70 light tank',   src:'Stalingrad',       tier:'core', pt:35,  stat:'Inf 5/4 · Veh 4/4 · Mv 7 · Armor 2', class:'light' },
+      { id:'su_t3485', name:'T-34/85',           src:'House rule',       tier:'ext',  pt:100, stat:'Inf 5/6 · Veh 7/11 · Mv 7 · Armor 4', class:'med' },
+      { id:'su_su85',  name:'SU-85',             src:'House rule',       tier:'ext',  pt:95,  stat:'Inf 5/6 · Veh 7/11 · Mv 6 · Armor 4', class:'td' },
+      { id:'su_su152', name:'SU-152 "Zveroboy"', src:'House rule',       tier:'ext',  pt:120, stat:'Inf 5/8 · Veh 5/13 · Mv 6 · Armor 4 · heavy shell', class:'td' },
+      { id:'su_is2',   name:'IS-2',              src:'House rule',       tier:'ext',  pt:150, stat:'Inf 5/6 · Veh 8/13 · Mv 5 · Armor 6 · thick armor', class:'heavy' },
+    ],
+    guns: [
+      { id:'su_zis3', name:'ZiS-3 76.2 mm gun',      src:'Fury of the Bear', tier:'core', pt:38, stat:'Inf 5/5 · Veh 7/10 · Armor 2 · Equipment · dual-purpose' },
+      { id:'su_45',   name:'45 mm anti-tank gun',    src:'House rule',       tier:'ext',  pt:26, stat:'Inf 5/3 · Veh 6/7 · Armor 2 · Equipment · fragile' },
+    ],
+  },
+  japan: {
+    label:'Imperial Japan', fan:true, doctrine:DOCTRINES.japan,
+    squads: stdSquads('japan', 'fan: Tail of the Dragon', { elite:'Naval Landing Force (SNLF)' }),
+    vehicles: [
+      { id:'jp_hago',  name:'Type 95 Ha-Go',   src:'fan: Tail of the Dragon', tier:'fan', pt:32, stat:'Inf 5/4 · Veh 4/4 · Mv 6 · Armor 2', class:'light' },
+      { id:'jp_chiha', name:'Type 97 Chi-Ha',  src:'fan: Tail of the Dragon', tier:'fan', pt:45, stat:'Inf 5/5 · Veh 5/5 · Mv 6 · Armor 3', class:'med' },
+      { id:'jp_honi',  name:'Type 1 Ho-Ni',    src:'fan: Tail of the Dragon', tier:'fan', pt:60, stat:'Inf 5/6 · Veh 6/9 · Mv 6 · Armor 2 · open top', class:'td' },
+    ],
+    guns: [
+      { id:'jp_47',  name:'Type 1 47 mm anti-tank gun', src:'fan: Tail of the Dragon', tier:'fan', pt:28, stat:'Inf 5/3 · Veh 6/8 · Armor 2 · Equipment · fragile' },
+      { id:'jp_70',  name:'Type 92 70 mm battalion gun', src:'fan: Tail of the Dragon', tier:'fan', pt:40, stat:'Inf 5/5 · Veh 4/4 · Armor 2 · Equipment · area / direct' },
+    ],
+  },
+};
+
+/* Fortifications &amp; obstacles — physical components in ToI. */
+const FORTS = [
+  { id:'f_entrench', name:'Entrenchment / dug-in position', src:'Base', tier:'core', pt:5,  stat:'+2 cover · vehicles cannot enter' },
+  { id:'f_pillbox',  name:'Pillbox',       src:'Base', tier:'core', pt:15, stat:'+6 cover · blocks vehicles' },
+  { id:'f_wire',     name:'Razor Wire',    src:'Base', tier:'core', pt:3,  stat:'Stops non-engineer squads and light vehicles; half firepower in the space' },
+  { id:'f_traps',    name:'Tank Traps / dragon’s teeth', src:'Base', tier:'core', pt:4, stat:'Blocks vehicles; +1 cover' },
+  { id:'f_mines',    name:'Minefield',     src:'Base', tier:'core', pt:8,  stat:'Hits on entry' },
+  { id:'f_bunker',   name:'Bunker (multi-space)', src:'Normandy', tier:'core', pt:25, stat:'Coastal fortification, very high cover' },
+];
+
+const CATS = [
+  { key:'command',  label:'Command' },
+  { key:'infantry', label:'Infantry' },
+  { key:'weapons',  label:'Weapon Teams' },
+  { key:'spec',     label:'Specializations' },
+  { key:'vehicle',  label:'Vehicles' },
+  { key:'gun',      label:'Guns &amp; Emplacements' },
+  { key:'transport',label:'Transport' },
+  { key:'fort',     label:'Fortifications' },
+];
+const CAT_NOTE = {
+  command:'Your force needs at least one command squad. The officer gives Rally, +1 movement and +1 cover vs suppressive fire.',
+  infantry:'The backbone. Add a squad to the list, then edit its figure mix and specialization in the force panel on the right. At least 2 infantry / weapon squads beyond command.',
+  weapons:'Heavy weapons count as a 2-crew team and fill a whole base. Official rule: a squad with a heavy infantry weapon may <b>never</b> be assigned a specialization token, and cannot do Fire &amp; Movement or Assault.',
+  spec:'The small tokens you attach to an infantry squad during setup — one per squad, never on a weapon team. Base game has four; the rest came with the expansions. Assign from here or from the squad’s row in the force panel.',
+  vehicle:'About 1 vehicle per 250 pts. Heavy tanks: max 1 per 750 pts (Germany: 1 per 500). No single unit may cost more than ⅓ of the limit. Only units from the <b>Sets</b> you enabled above are shown — <b>house rule</b> / <b>fan</b> items are not in any physical box.',
+  gun:'Equipment units must be manned by a fresh squad in the same space to move (1 space) or fire. Cannot Assault. Destroyed if heavily damaged. ToI has no on-board field artillery — artillery is off-board via Strategy cards, which are not part of this points system.',
+  transport:'One transport per infantry squad. Assigned to the squad in the right panel — so it does not use a vehicle slot.',
+  fort:'Fortification is governed by the scenario — see the briefing below. Free entrenchments from the scenario do not count toward points.',
+};
+
+const EXPANSIONS = [
+  ['Tide of Iron', '2007 · FFG', 'Core game. USA and Germany, Western Front. Regular / elite / officer figures, machine-gun and mortar teams. Specializations: anti-tank, engineer, flamethrower, medic (6 of each). Vehicles: 12 M4A1 Sherman, 6 Panzer IV, 6 Tiger I, M3A1 and Sd.Kfz. 251 half-tracks, GMC and Opel Blitz trucks. Entrenchment / pillbox, razor wire / tank traps, minefields, smoke.'],
+  ['Days of the Fox', '2008 · FFG', 'North Africa. New nation: Britain (~90 figures). British vehicles: Matilda II, Crusader, Bren Carrier. German: Panzer III, Panther. Anti-tank guns (equipment): British 6-pdr, US M1 57 mm, German 8.8 cm Flak. New specializations: Recon, Alpha Unit, Bravo Unit + experience tokens (Bronze / Silver Star / Medal of Honor). Desert terrain; rule for towing guns with vehicles.'],
+  ['Designer Series, Volume 1', '2008 · FFG', 'Hardcover with 20 scenarios by well-known wargame designers, compiled by Dana Lombardy. No new unit components.'],
+  ['Normandy', '2009 · FFG', 'Campaign game. Expands British infantry (42 figures + 14 bases). New American: M10 Tank Destroyer. New German: StuG III, Jagdpanzer IV, Tiger II (King Tiger) — Panther returns. New specialization: Demolitions. Weather and Leadership decks, beaches, bunkers, hedgerows, destructible buildings.'],
+  ['Map Pack 1', '2009 · FFG', 'Upgraded map boards and obstacles, no new units.'],
+  ['Fury of the Bear', '2011 · FFG', 'Eastern Front. New nation: Soviet Union (~100 figures: 36 regular, 8 elite, 4 officers, 4 mortar, 4 machine-gun teams; 4 KV-1, 14 T-34/76, 4 SU-122, 4 ZiS-3 76.2 mm; trucks and half-tracks in Soviet colours). New German: 8 Panther, 7.5 cm PaK 40. New specializations: Expert, Saboteur. Munitions tokens for vehicles (HE, AP-B, AP-C, Smoke). Winter terrain.'],
+  ['Next Wave', '2013 · 1A Games', 'Reprinted core set: 48 vehicles, 168 figures, 12 maps. Bundles all specialization types from the line in one box. M10 and StuG III are now part of the core forces. No new unit types. Compatible with every FFG expansion + Stalingrad. Supplements: "Tools of War" and the Kickstarter bonus booklet (extra unit cards such as Firefly, 2-pdr, AP-DS ammunition).'],
+  ['Stalingrad', '2014 · 1A Games', 'Urban campaign. 82 Soviet figures, 6 T-34/76, 4 T-70 (new), 8 German (4 Panzer III, 4 StuG III E), 12 city boards, 8 scenarios. Only genuinely new unit: T-70.'],
+  ['Tail of the Dragon', 'fan project (unofficial)', 'Community-made Pacific expansion: Imperial Japan and US Marines, Type 95 Ha-Go, Type 97 Chi-Ha, LVT, jungle and beach terrain.'],
+];
+
+/* =====================================================================
+   COLLECTIONS — which sets the player owns / allows.
+   A unit is fieldable only if the collection its `src` belongs to is on.
+   ===================================================================== */
+const COLLECTIONS = [
+  { key:'base',       label:'Tide of Iron',    srcs:['Base'],                locked:true },
+  { key:'dof',        label:'Days of the Fox', srcs:['Days of the Fox'] },
+  { key:'normandy',   label:'Normandy',        srcs:['Normandy'] },
+  { key:'fotb',       label:'Fury of the Bear',srcs:['Fury of the Bear'] },
+  { key:'stalingrad', label:'Stalingrad',      srcs:['Stalingrad'] },
+  { key:'toolsofwar', label:'Tools of War',    srcs:['Tools of War (1A)'], cls:'opt' },
+  { key:'houserule',  label:'House-rule units',srcs:['House rule'],        cls:'opt' },
+  { key:'fan',        label:'Fan · Tail of the Dragon', srcs:['fan: Tail of the Dragon'], cls:'fan' },
+];
+const OFFICIAL_COLLS = ['base','dof','normandy','fotb','stalingrad','toolsofwar'];
+const DEFAULT_COLLS  = ['base','dof','normandy','fotb','stalingrad'];
+
+function collectionsFor(src){
+  if(!src) return ['base'];
+  const parts = src.split(' / ').map(s=>s.trim());
+  const keys = [];
+  for(const p of parts){
+    const c = COLLECTIONS.find(c => c.srcs.some(s => p===s) || (p.startsWith('fan') && c.key==='fan'));
+    if(c) keys.push(c.key);
+  }
+  return keys.length ? keys : ['base'];
+}
+function srcEnabled(src){ return collectionsFor(src).some(k => state.collections.includes(k)); }
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const LS_KEY = 'toi-order-of-battle-lists-v1';
+let state = { nation:'usa', limit:700, name:'New force', items:[], cat:'infantry', scenario:'pitched', role:'attacker', collections:DEFAULT_COLLS.slice() };
+const isFanNation = ()=> !!NATIONS[state.nation].fan;
+/* a nation can only be fielded if the set holding its basic troops is on */
+function ensureNationColls(){
+  for(const k of collectionsFor(NATIONS[state.nation].squads[0].src))
+    if(!state.collections.includes(k)) state.collections.push(k);
+}
+let uidc = 1;
+const uid = ()=> 'u'+(uidc++);
+
+/* resolve the scenario + role into one context */
+function sctx(){
+  const s = scenByKey(state.scenario);
+  let o = { key:s.key, name:s.name, src:s.src, deploy:s.deploy, vc:s.vc, orders:s.orders||'',
+            mult:1, fort:s.fort||0, freeEntrench:s.freeEntrench||0, reserves:s.reserves||0,
+            bunker:!!s.bunker, asym:!!s.asym, roleLabel:'' };
+  if(s.asym){
+    const r = state.role==='defender' ? s.defender : s.attacker;
+    o.mult = r.mult; o.fort = r.fort||0; o.freeEntrench = r.freeEntrench||0;
+    o.reserves = r.reserves||0; o.bunker = !!r.bunker;
+    o.orders = r.orders || s.orders || '';
+    o.deploy = r.deploy || s.deploy;
+    o.roleLabel = state.role==='defender' ? 'defender' : 'attacker';
+  }
+  return o;
+}
+function effLimit(){ return Math.max(100, Math.round(state.limit * sctx().mult / 25) * 25); }
+function fortBudget(){ return Math.round(effLimit() * sctx().fort); }
+
+function defaultSlots(kind){
+  if(kind==='command') return ['officer','regular','regular','regular'];
+  if(kind==='elite')   return ['elite','elite','elite','elite'];
+  return ['regular','regular','regular','regular'];
+}
+
+function seedSample(){
+  // USA @ 700, Attack &amp; Defend — a realistic starting point
+  state = { nation:'usa', limit:700, name:'Task Force — Normandy', items:[], cat:'infantry', scenario:'attack', role:'attacker', collections:DEFAULT_COLLS.slice() };
+  add('usa_cmd');
+  add('usa_rifle');
+  add('usa_rifle'); const r = state.items[state.items.length-1]; r.spec='antitank';
+  add('usa_rifle');
+  add('usa_mg');
+  add('usa_mortar');
+  add('us_sherman');
+  add('us_57');
+  const ht = state.items.find(i=>i.defId==='usa_rifle'); if(ht) ht.transportId='us_ht';
+}
+
+/* =====================================================================
+   LOOKUP
+   ===================================================================== */
+function findDef(id){
+  const N = NATIONS[state.nation];
+  for(const s of N.squads) if(s.id===id) return {...s, _type:'squad'};
+  for(const v of N.vehicles) if(v.id===id) return {...v, cat:'vehicle', _type:'vehicle'};
+  for(const g of N.guns) if(g.id===id) return {...g, cat:'gun', _type:'gun'};
+  for(const t of TRANSPORTS[state.nation]) if(t.id===id) return {...t, cat:'transport', _type:'transport'};
+  for(const f of FORTS) if(f.id===id) return {...f, cat:'fort', _type:'fort'};
+  return null;
+}
+
+function itemCost(it){
+  const d = findDef(it.defId);
+  if(!d) return 0;
+  if(d._type==='squad'){
+    let c = 0;
+    const heavyWeapon = d.kind==='mg' || d.kind==='mortar';
+    if(d.kind==='mg') c = 17;
+    else if(d.kind==='mortar') c = 21;
+    else {
+      for(const s of it.slots){ if(s && FIG[s]) c += FIG[s].cost; }
+      if(state.nation==='soviet'){ // doctrine: regular figures −1
+        const reg = it.slots.filter(s=>s==='regular').length; c -= reg;
+      }
+    }
+    // Official rule: a squad with a heavy infantry weapon may never take a specialization token.
+    if(heavyWeapon) it.spec = null;
+    if(it.spec && SPEC_BY_KEY[it.spec]) c += SPEC_BY_KEY[it.spec].pt;
+    if(it.transportId){
+      const t = TRANSPORTS[state.nation].find(x=>x.id===it.transportId);
+      if(t){ let tc = t.pt; if(state.nation==='usa') tc = Math.round(tc*0.8); c += tc; }
+    }
+    return c;
+  }
+  return Math.max(0, d.pt * (it.qty||1));
+}
+function totalCost(){ return state.items.reduce((a,it)=>a+itemCost(it),0); }
+
+/* =====================================================================
+   MUTATION
+   ===================================================================== */
+function add(defId){
+  const d = findDef(defId); if(!d) return;
+  const it = { uid:uid(), defId, qty:1, slots:null, spec:null, transportId:null };
+  if(d._type==='squad') it.slots = defaultSlots(d.kind);
+  state.items.push(it);
+  render();
+}
+function removeItem(u){ state.items = state.items.filter(i=>i.uid!==u); render(); }
+function cycleSlot(u, idx){
+  const it = state.items.find(i=>i.uid===u); if(!it) return;
+  const d = findDef(it.defId);
+  const order = d.kind==='command' && idx===0 ? ['officer'] :
+                d.kind==='command' ? ['regular','elite','empty'] :
+                ['regular','elite','officer','empty'];
+  let cur = it.slots[idx]||'empty';
+  let ni = (order.indexOf(cur)+1) % order.length;
+  let next = order[ni];
+  if(next==='officer' && it.slots.filter((s,i)=>i!==idx && s==='officer').length>0){
+    next = order[(ni+1)%order.length];
+  }
+  if(next==='empty' && it.slots.filter((s,i)=>i!==idx && s && s!=='empty').length===0){
+    next = 'regular'; // keep at least one figure
+  }
+  it.slots[idx] = next==='empty' ? 'empty' : next;
+  render();
+}
+function setSpec(u, val){ const it=state.items.find(i=>i.uid===u); if(it){ it.spec = val||null; render(); } }
+function setTransport(u, val){ const it=state.items.find(i=>i.uid===u); if(it){ it.transportId = val||null; render(); } }
+function setQty(u, delta){
+  const it = state.items.find(i=>i.uid===u); if(!it) return;
+  it.qty = Math.max(1, (it.qty||1)+delta);
+  render();
+}
+function eligibleForSpec(){
+  return state.items.filter(it=>{
+    const d = findDef(it.defId);
+    return d && d._type==='squad' && (d.kind==='rifle'||d.kind==='elite') && !it.spec;
+  });
+}
+function assignSpecToNext(key){
+  const e = eligibleForSpec();
+  if(!e.length) return;
+  e[0].spec = key;
+  render();
+}
+
+/* =====================================================================
+   VALIDATION — order of battle
+   ===================================================================== */
+function validate(){
+  const out = [];
+  const C = sctx();
+  const lim = effLimit();
+  const used = totalCost();
+  const squads = state.items.filter(i=>findDef(i.defId)?._type==='squad');
+  const cmd = squads.filter(i=>findDef(i.defId).kind==='command');
+  const otherInf = squads.filter(i=>['rifle','elite','mg','mortar'].includes(findDef(i.defId).kind));
+  const vehicles = state.items.filter(i=>findDef(i.defId)?._type==='vehicle');
+  const vehCount = vehicles.reduce((a,i)=>a+(i.qty||1),0);
+  const guns = state.items.reduce((a,i)=> a + (findDef(i.defId)?._type==='gun' ? (i.qty||1):0), 0);
+  const forts = state.items.filter(i=>findDef(i.defId)?._type==='fort');
+  const heavyCap = state.nation==='germany' ? Math.max(1, Math.floor(lim/500)) : Math.max(1, Math.floor(lim/750));
+  const heavies = vehicles.filter(i=>findDef(i.defId).class==='heavy').reduce((a,i)=>a+(i.qty||1),0);
+  const vehSlots = Math.max(1, Math.round(lim/250));
+  const specialized = squads.filter(i=>i.spec).length;
+  const specCap = Math.ceil(squads.length/2);
+  const fortPts = forts.reduce((a,i)=>a+itemCost(i),0);
+  const mobile = vehicles.filter(i=>{ const d=findDef(i.defId); return d.class==='light'; }).reduce((a,i)=>a+(i.qty||1),0)
+    + squads.filter(i=>i.transportId).length
+    + squads.filter(i=>i.spec==='recon').length;
+
+  out.push(used>lim
+    ? {s:'fail', t:`Over the limit by ${used-lim} pts${C.roleLabel?` (${C.roleLabel}: ${lim} pts)`:''}.`}
+    : {s:'ok', t:`${lim-used} pts left of ${lim}${C.roleLabel?` (${C.roleLabel})`:''}.`});
+
+  out.push(cmd.length>=1 ? {s:'ok', t:'Command squad present.'} : {s:'fail', t:'No command squad.'});
+  out.push(otherInf.length>=2 ? {s:'ok', t:`${otherInf.length} infantry / weapon squads.`} : {s:'fail', t:'Needs at least 2 infantry / weapon squads beyond command.'});
+
+  if(heavies>heavyCap) out.push({s:'fail', t:`Too many heavy tanks (${heavies}/${heavyCap} at ${lim} pts).`});
+  else if(heavies>0) out.push({s:'ok', t:`Heavy tanks: ${heavies}/${heavyCap}.`});
+  if(state.nation==='japan' && vehicles.some(i=>findDef(i.defId).class==='heavy')) out.push({s:'fail', t:'Japanese doctrine: no heavy tanks.'});
+
+  const biggest = Math.max(0, ...state.items.map(i=> findDef(i.defId)?._type==='squad' ? itemCost(i) : itemCost(i)/(i.qty||1) ));
+  if(biggest > lim/3) out.push({s:'warn', t:`A single unit costs more than ⅓ of the limit (${Math.round(biggest)} pts).`});
+
+  if(vehCount > vehSlots) out.push({s:'warn', t:`Many vehicles (${vehCount}/${vehSlots} recommended).`});
+  if(guns > vehSlots) out.push({s:'warn', t:`Many guns / emplacements (${guns}/${vehSlots} recommended).`});
+  if(specialized > specCap) out.push({s:'warn', t:`More specialized squads than recommended (${specialized}/${specCap}).`});
+
+  if(forts.length){
+    if(C.fort<=0) out.push({s:'fail', t:`"${C.name}"${C.roleLabel?` (${C.roleLabel})`:''} does not allow fortification — remove ${forts.length} item(s).`});
+    else if(fortPts > fortBudget()) out.push({s:'fail', t:`Fortification ${fortPts} pts exceeds the cap of ${fortBudget()} pts (${Math.round(C.fort*100)}%).`});
+    else out.push({s:'ok', t:`Fortification ${fortPts}/${fortBudget()} pts.`});
+  } else if(C.freeEntrench>0){
+    out.push({s:'warn', t:`You are the defender with ${C.freeEntrench} free entrenchment(s) — consider digging in (Fortifications tab).`});
+  }
+
+  if(C.reserves>0) out.push({s:'ok', t:`Reserves: ~${Math.round(C.reserves*100)}% of the force (${Math.round(lim*C.reserves)} pts) starts off the board.`});
+  if(C.key==='breakthrough' && state.role==='attacker' && mobile<3)
+    out.push({s:'warn', t:`Breakthrough: only ${mobile} mobile units — aim for at least 3 (light tanks, transports, recon).`});
+  if(C.key==='flank' && mobile<2)
+    out.push({s:'warn', t:'Flank attack: bring at least 2 mobile units for the flanking element.'});
+  if(C.key==='demolition' && !squads.some(i=>i.spec==='demolition'))
+    out.push({s:'warn', t:'Demolition: bring a Demolitions squad to destroy the enemy objective.'});
+  if((C.key==='hold'||C.key==='attack'||C.key==='beachhead') && state.role==='defender' && guns===0 && !squads.some(i=>i.spec==='antitank'))
+    out.push({s:'warn', t:'Defense: you have no anti-tank (gun or Anti-Tank specialization).'});
+  if(C.key==='attrition' && biggest > lim/4)
+    out.push({s:'warn', t:'Attrition: expensive single units are a liability — kill points decide the game.'});
+
+  const offSet = state.items.filter(i=>{ const d=findDef(i.defId); return d && d.src && !srcEnabled(d.src); });
+  if(offSet.length)
+    out.push({s:'warn', t:`${offSet.length} unit(s) come from a set that is currently switched off (see Collections).`});
+  const houseFan = state.items.filter(i=>{ const d=findDef(i.defId); return d && d.tier && d.tier!=='core' && srcEnabled(d.src); });
+  if(houseFan.length)
+    out.push({s:'warn', t:`${houseFan.length} unit(s) are house-rule / fan, not from the physical box.`});
+
+  return out;
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+
+function render(){
+  renderNationSel();
+  renderScenarioSel();
+  renderCollections();
+  renderDoctrine();
+  renderBriefing();
+  renderTabs();
+  renderUnitList();
+  renderRoster();
+}
+
+function renderScenarioSel(){
+  const sel = $('#scenarioSel');
+  if(!sel.options.length){
+    for(const s of SCENARIOS){
+      const o = document.createElement('option');
+      o.value = s.key; o.innerHTML = `${s.name} — ${s.src}`;
+      sel.appendChild(o);
+    }
+  }
+  sel.value = state.scenario;
+  const asym = scenByKey(state.scenario).asym;
+  $('#roleWrap').hidden = !asym;
+  $('#roleSel').value = state.role;
+}
+
+function toggleCollection(key){
+  if(key === 'all'){
+    const allOn = OFFICIAL_COLLS.every(k => state.collections.includes(k));
+    state.collections = allOn ? DEFAULT_COLLS.slice()
+      : Array.from(new Set([...state.collections, ...OFFICIAL_COLLS]));
+  } else {
+    const c = COLLECTIONS.find(x=>x.key===key);
+    if(c && c.locked) return;
+    const i = state.collections.indexOf(key);
+    if(i >= 0) state.collections.splice(i,1); else state.collections.push(key);
+  }
+  ensureNationColls();
+  if(state.cat==='fort' && sctx().fort<=0) state.cat = 'infantry';
+  render();
+}
+
+function renderCollections(){
+  const bar = $('#collBar');
+  const allOn = OFFICIAL_COLLS.every(k => state.collections.includes(k));
+  let h = `<span class="collbar-lbl">Sets</span>`;
+  h += `<button class="coll-chip all" data-coll="all" aria-pressed="${allOn}">All expansions</button>`;
+  for(const c of COLLECTIONS){
+    const on = state.collections.includes(c.key);
+    h += `<button class="coll-chip ${c.cls||''}" data-coll="${c.key}" aria-pressed="${on}" ${c.locked?'disabled title="Always available"':''}>${c.label}</button>`;
+  }
+  bar.innerHTML = h;
+  bar.querySelectorAll('[data-coll]').forEach(b=> b.onclick = ()=> toggleCollection(b.dataset.coll));
+}
+
+function renderBriefing(){
+  const C = sctx();
+  const roleTag = C.roleLabel ? ` · <b style="color:var(--oxide)">${C.roleLabel.toUpperCase()}</b>` : '';
+  const multTxt = C.mult!==1 ? ` (${C.mult>1?'+':''}${Math.round((C.mult-1)*100)}% points)` : '';
+  $('#briefingBox').innerHTML =
+    `<b>Scenario — ${C.name}${roleTag}</b>` +
+    `<span class="orders">${C.orders || 'Build a balanced force within the limit.'}</span>` +
+    `<span class="vc"><b>Deployment:</b> ${C.deploy}</span>` +
+    `<span class="vc"><b>Victory:</b> ${C.vc}</span>` +
+    `<span class="vc"><b>Effective limit:</b> ${state.limit}${multTxt} → ${effLimit()} pts` +
+      (C.fort>0 ? ` · fortification up to ${fortBudget()} pts` : ' · no fortification') +
+      (C.freeEntrench>0 ? ` · ${C.freeEntrench} free entrenchment(s)` : '') + `</span>`;
+}
+
+function renderNationSel(){
+  const sel = $('#nationSel');
+  if(!sel.options.length){
+    for(const [k,v] of Object.entries(NATIONS)){
+      const o = document.createElement('option'); o.value=k; o.textContent=v.label; sel.appendChild(o);
+    }
+  }
+  sel.value = state.nation;
+}
+function renderDoctrine(){
+  const d = NATIONS[state.nation].doctrine;
+  $('#doctrineBox').innerHTML = `<b>Doctrine — ${d.name}</b><p>${d.text}</p>`;
+}
+function renderTabs(){
+  const box = $('#catTabs');
+  box.innerHTML = CATS.map(c=>
+    `<button role="tab" data-cat="${c.key}" aria-selected="${state.cat===c.key}">${c.label}</button>`).join('');
+  box.querySelectorAll('button').forEach(b=> b.onclick = ()=>{ state.cat=b.dataset.cat; render(); });
+  let note = CAT_NOTE[state.cat]||'';
+  if(state.cat==='fort'){
+    const C = sctx();
+    note = C.fort>0
+      ? `<b>${C.name}${C.roleLabel?` (${C.roleLabel})`:''}:</b> up to <b>${fortBudget()} pts</b> of fortification (${Math.round(C.fort*100)}%).`
+        + (C.freeEntrench>0 ? ` You also have ${C.freeEntrench} free entrenchment(s) that cost no points.` : '')
+        + (C.bunker ? ' A bunker is allowed in this scenario.' : '')
+      : `<b>${C.name}${C.roleLabel?` (${C.roleLabel})`:''}</b> does not allow fortification. Change scenario or role to dig in.`;
+  }
+  $('#catNote').innerHTML = note;
+  const leg = $('#statLeg');
+  leg.innerHTML = STAT_LEGEND;
+  leg.hidden = (state.cat==='spec' || state.cat==='fort');
+}
+
+function unitCatalog(){
+  const N = NATIONS[state.nation];
+  switch(state.cat){
+    case 'command':  return N.squads.filter(s=>s.kind==='command' && srcEnabled(s.src));
+    case 'infantry': return N.squads.filter(s=>(s.kind==='rifle'||s.kind==='elite') && srcEnabled(s.src));
+    case 'weapons':  return N.squads.filter(s=>(s.kind==='mg'||s.kind==='mortar') && srcEnabled(s.src));
+    case 'vehicle':  return N.vehicles.filter(v=>srcEnabled(v.src)).map(v=>({...v}));
+    case 'gun':      return N.guns.filter(g=>srcEnabled(g.src)).map(g=>({...g}));
+    case 'transport':return TRANSPORTS[state.nation].filter(t=>srcEnabled(t.src)).map(t=>({...t, desc:`Capacity ${t.cap}. Assign to an infantry squad in the right panel.`}));
+    case 'fort':     return FORTS.filter(f=> f.id!=='f_bunker' || sctx().bunker).map(f=>({...f}));
+  }
+  return [];
+}
+
+function renderUnitList(){
+  if(state.cat==='spec'){ renderSpecPanel(); return; }
+  if(state.cat==='fort' && sctx().fort<=0){
+    $('#unitList').innerHTML = `<p class="empty-note">Fortification is not allowed in "${sctx().name}"${sctx().roleLabel?` as the ${sctx().roleLabel}`:''}.<br>Pick e.g. <i>Attack &amp; Defend</i>, <i>Hold Until Relieved</i> or <i>Beachhead</i> as the defender.</p>`;
+    return;
+  }
+  const list = unitCatalog();
+  $('#unitList').innerHTML = list.map(u=>{
+    const base = u.pt!=null ? u.pt : (u.kind==='command' ? 28 : u.kind==='elite' ? 36 : u.kind==='mg' ? 17 : u.kind==='mortar' ? 21 : 20);
+    const fromLabel = ['command','rifle','elite'].includes(u.kind) ? 'from' : '';
+    const tcl = u.tier==='ext' ? ' tag-ext' : u.tier==='fan' ? ' tag-fan' : '';
+    return `<div class="unit">
+      <h4>${u.name}<span class="tag${tcl}">${u.src}</span></h4>
+      <div class="stat mono">${u.stat}</div>
+      ${u.desc ? `<div class="desc">${u.desc}</div>`:''}
+      <div class="price">
+        <div class="pts">${fromLabel?`<small>${fromLabel} </small>`:''}${base}<small> pts</small></div>
+        <button class="add-btn" data-add="${u.id}">Add</button>
+      </div>
+    </div>`;
+  }).join('') || `<p class="empty-note">No units in this category for ${NATIONS[state.nation].label}.</p>`;
+  $('#unitList').querySelectorAll('[data-add]').forEach(b=> b.onclick = ()=> add(b.dataset.add));
+}
+
+function renderSpecPanel(){
+  const carriers = {};
+  state.items.forEach(it=>{ if(it.spec && findDef(it.defId)){ (carriers[it.spec] ||= []).push(it); } });
+  const nEligible = eligibleForSpec().length;
+  const intro = `<p class="cat-note" style="margin-top:0">Currently ${nEligible} infantry squad(s) without a specialization. Assign one below, or use the dropdown on each squad in the force panel. Weapon teams cannot take a specialization.</p>`;
+  const cards = SPECS.map(sp=>{
+    const cs = carriers[sp.key] || [];
+    const chips = cs.map(it=>{
+      const d = findDef(it.defId);
+      return `<button class="spec-chip" data-unassign="${it.uid}" title="Remove from this squad">${d.name} ✕</button>`;
+    }).join('');
+    return `<div class="spec-card${cs.length?' has':''}">
+      <h4>${sp.name} <span class="src">${sp.src}</span> <span class="pt">+${sp.pt} pts</span></h4>
+      <p>${sp.rule}</p>
+      <div class="spec-foot">
+        ${cs.length ? `<span class="mini-note" style="margin:0">On:</span> ${chips}` : `<span class="mini-note" style="margin:0">Not assigned.</span>`}
+        <button class="add-btn" data-assignspec="${sp.key}" ${nEligible?'':'disabled'}>${nEligible?'Assign →':'No free squad'}</button>
+      </div>
+    </div>`;
+  }).join('');
+  $('#unitList').innerHTML = intro + cards + `
+    <div class="callout" style="margin-top:14px">
+      <b>Experience tokens (Days of the Fox):</b> Bronze Star, Silver Star and Medal of Honor — the 1–3 star markers that Alpha / Bravo squads upgrade with during play.<br>
+      <b>Munitions tokens (Fury of the Bear, optional):</b> go on <i>vehicles</i>, not infantry — HE, AP-B, AP-C, Smoke.
+    </div>`;
+  $('#unitList').querySelectorAll('[data-assignspec]').forEach(b=> b.onclick = ()=> assignSpecToNext(b.dataset.assignspec));
+  $('#unitList').querySelectorAll('[data-unassign]').forEach(b=> b.onclick = ()=> setSpec(b.dataset.unassign, ''));
+}
+
+function slotClass(s){ return s==='elite'?'el':s==='officer'?'of':s==='empty'?'em':'rg'; }
+function slotChar(s){ return s==='elite'?'E':s==='officer'?'O':s==='empty'?'·':'R'; }
+
+function renderRoster(){
+  const C = sctx();
+  const lim = effLimit();
+  $('#ptsLimit').textContent = lim;
+  const used = totalCost();
+  $('#ptsUsed').textContent = used;
+  const pct = Math.min(100, Math.round(used/lim*100));
+  const bar = $('#ptsBar');
+  bar.style.width = pct+'%';
+  bar.classList.toggle('over', used>lim);
+  $('#gaugeSub').textContent =
+    `${C.name}${C.roleLabel?` · ${C.roleLabel}`:''}` +
+    (lim!==state.limit ? `  ·  ${state.limit} base → ${lim}` : '');
+  $('#listName').value = state.name;
+
+  $('#checks').innerHTML = validate().map(c=>
+    `<div class="check ${c.s}"><span class="dot ${c.s}"></span><span>${c.t}</span></div>`).join('');
+
+  const groups = {
+    command:'Command', infantry:'Infantry', weapons:'Weapon Teams',
+    vehicle:'Vehicles', gun:'Guns &amp; Emplacements', transport:'Transport', fort:'Fortifications'
+  };
+  const byGroup = {};
+  state.items.forEach(it=>{
+    const d = findDef(it.defId); if(!d) return;
+    const g = d.cat || d._type;
+    (byGroup[g] ||= []).push(it);
+  });
+
+  let html = '';
+  for(const [gk, gl] of Object.entries(groups)){
+    if(!byGroup[gk] || !byGroup[gk].length) continue;
+    html += `<div class="rgroup-h">${gl}</div>`;
+    for(const it of byGroup[gk]) html += renderRosterItem(it);
+  }
+  const rl = $('#rosterList');
+  rl.innerHTML = html || `<p class="empty-note">Empty list. Pick units from the arsenal on the left.</p>`;
+
+  rl.querySelectorAll('[data-slot]').forEach(b=> b.onclick = ()=>{
+    const [u,idx] = b.dataset.slot.split('|'); cycleSlot(u, +idx);
+  });
+  rl.querySelectorAll('[data-spec]').forEach(s=> s.onchange = ()=> setSpec(s.dataset.spec, s.value));
+  rl.querySelectorAll('[data-trans]').forEach(s=> s.onchange = ()=> setTransport(s.dataset.trans, s.value));
+  rl.querySelectorAll('[data-qty]').forEach(b=> b.onclick = ()=>{ const [u,d]=b.dataset.qty.split('|'); setQty(u,+d); });
+  rl.querySelectorAll('[data-rm]').forEach(b=> b.onclick = ()=> removeItem(b.dataset.rm));
+}
+
+function renderRosterItem(it){
+  const d = findDef(it.defId);
+  const cost = itemCost(it);
+  let cfg = '';
+  if(d._type==='squad'){
+    const heavy = d.kind==='mg'||d.kind==='mortar';
+    if(!heavy){
+      cfg += `<div class="ritem-cfg">` +
+        it.slots.map((s,i)=>`<button class="slot ${slotClass(s)}" data-slot="${it.uid}|${i}" title="Click to change figure">${slotChar(s)}</button>`).join('') +
+        `</div>`;
+      const opts = ['<option value="">No specialization</option>']
+        .concat(SPECS.map(sp=>`<option value="${sp.key}" ${it.spec===sp.key?'selected':''}>${sp.name} (+${sp.pt})</option>`));
+      cfg += `<div class="ritem-cfg"><select data-spec="${it.uid}">${opts.join('')}</select></div>`;
+    } else {
+      cfg += `<div class="mini-note">2-crew heavy weapon team · no specialization</div>`;
+    }
+    const tOpts = ['<option value="">No transport</option>']
+      .concat(TRANSPORTS[state.nation].filter(t=>srcEnabled(t.src)||it.transportId===t.id).map(t=>{
+        let tc = state.nation==='usa'? Math.round(t.pt*0.8) : t.pt;
+        return `<option value="${t.id}" ${it.transportId===t.id?'selected':''}>${t.name} (+${tc})</option>`;
+      }));
+    cfg += `<div class="ritem-cfg"><select data-trans="${it.uid}">${tOpts.join('')}</select></div>`;
+  } else {
+    cfg += `<div class="ritem-cfg">
+      <div class="qty">
+        <button data-qty="${it.uid}|-1" aria-label="Fewer">−</button>
+        <span>${it.qty||1}</span>
+        <button data-qty="${it.uid}|1" aria-label="More">+</button>
+      </div>
+      <span class="mini-note">${d.stat}</span>
+    </div>`;
+  }
+  return `<div class="ritem">
+    <div class="ritem-top">
+      <span class="ritem-name">${d.name}${squadLabel(it,d)}</span>
+      <span class="ritem-cost mono">${cost} pts</span>
+    </div>
+    ${cfg}
+    <div class="ritem-cfg"><button class="x-btn" data-rm="${it.uid}">Remove</button></div>
+  </div>`;
+}
+function squadLabel(it,d){
+  if(d._type!=='squad') return '';
+  if(d.kind==='mg'||d.kind==='mortar') return '';
+  const c = {regular:0,elite:0,officer:0};
+  it.slots.forEach(s=>{ if(c[s]!=null) c[s]++; });
+  const parts = [];
+  if(c.officer) parts.push(`${c.officer} Off`);
+  if(c.elite) parts.push(`${c.elite} Elite`);
+  if(c.regular) parts.push(`${c.regular} Reg`);
+  const spec = it.spec ? ` +${SPEC_BY_KEY[it.spec].name}` : '';
+  return (parts.length || spec) ? ` <span class="mini-note">(${parts.join(', ')}${spec})</span>` : '';
+}
+
+/* =====================================================================
+   EXPORT / SAVE / LOAD
+   ===================================================================== */
+function armyText(){
+  const N = NATIONS[state.nation];
+  const C = sctx();
+  const lim = effLimit();
+  const used = totalCost();
+  let L = [];
+  L.push(`=== ${state.name.toUpperCase()} ===`);
+  L.push(`Nation: ${N.label}  |  Doctrine: ${N.doctrine.name}`);
+  L.push(`Scenario: ${C.name} (${C.src})${C.roleLabel?`  |  Role: ${C.roleLabel}`:''}`);
+  L.push(`Points: ${state.limit} base${lim!==state.limit?` → ${lim} effective`:''}  |  Used: ${used}  |  Left: ${lim-used}`);
+  if(C.reserves>0) L.push(`Reserves: ~${Math.round(C.reserves*100)}% starts off the board.`);
+  if(C.fort>0) L.push(`Fortification allowed: up to ${fortBudget()} pts${C.freeEntrench?` + ${C.freeEntrench} free entrenchment(s)`:''}.`);
+  L.push(`Deployment: ${C.deploy.replace(/<[^>]+>/g,'')}`);
+  L.push(`Victory: ${C.vc}`);
+  L.push('');
+  const groups = { command:'COMMAND', infantry:'INFANTRY', weapons:'WEAPON TEAMS', vehicle:'VEHICLES', gun:'GUNS & EMPLACEMENTS', transport:'TRANSPORT', fort:'FORTIFICATIONS' };
+  const byGroup = {};
+  state.items.forEach(it=>{ const d=findDef(it.defId); if(!d) return; (byGroup[d.cat||d._type] ||= []).push(it); });
+  for(const [gk,gl] of Object.entries(groups)){
+    if(!byGroup[gk]) continue;
+    L.push(gl);
+    for(const it of byGroup[gk]){
+      const d = findDef(it.defId);
+      let name = d.name + squadLabel(it,d).replace(/<[^>]+>/g,'');
+      if((it.qty||1)>1 && d._type!=='squad') name += `  x${it.qty}`;
+      const dots = '.'.repeat(Math.max(3, 54 - name.length));
+      L.push(`  ${name} ${dots} ${itemCost(it)}`);
+      for(const b of purchaseLines(it,d)){
+        const lbl = b.label.replace(/<[^>]+>/g,'').replace(/\s+/g,' ');
+        L.push(`      - ${lbl.length>70?lbl.slice(0,69)+'…':lbl}  (${b.pts})`);
+      }
+    }
+    L.push('');
+  }
+  L.push(`— Tide of Iron · Battle Builder v${APP_VERSION} — fan-made points system.`);
+  return L.join('\n');
+}
+
+function openDlg(title, bodyHTML){
+  $('#dlgTitle').textContent = title;
+  $('#dlgBody').innerHTML = bodyHTML;
+  $('#dlg').showModal();
+}
+function loadStore(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; }catch(e){ return {}; } }
+function saveStore(o){ try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){} }
+
+function doSave(){
+  const store = loadStore();
+  store[state.name] = { nation:state.nation, limit:state.limit, name:state.name, items:state.items, scenario:state.scenario, role:state.role, collections:state.collections.slice() };
+  saveStore(store);
+  openDlg('Saved', `<p>Force <b>${esc(state.name)}</b> saved in this browser.</p>`);
+}
+function doLoad(){
+  const store = loadStore();
+  const keys = Object.keys(store);
+  if(!keys.length){ openDlg('Load force', '<p>No saved forces in this browser yet.</p>'); return; }
+  const rows = keys.map(k=>{
+    const s = store[k];
+    return `<div class="saved-row">
+      <span><b>${esc(k)}</b> — ${NATIONS[s.nation]?.label||s.nation}, ${s.limit} pts</span>
+      <span>
+        <button data-loadkey="${encodeURIComponent(k)}">Open</button>
+        <button data-delkey="${encodeURIComponent(k)}">Delete</button>
+      </span></div>`;
+  }).join('');
+  openDlg('Load force', `<div class="saved-list">${rows}</div>`);
+  $('#dlgBody').querySelectorAll('[data-loadkey]').forEach(b=> b.onclick = ()=>{
+    const k = decodeURIComponent(b.dataset.loadkey); const s = loadStore()[k];
+    state = { nation:s.nation, limit:s.limit, name:s.name, items:s.items, cat:'infantry',
+              scenario:s.scenario||'pitched', role:s.role||'attacker',
+              collections:(Array.isArray(s.collections)&&s.collections.length? s.collections.slice() : DEFAULT_COLLS.slice()) };
+    ensureNationColls();
+    uidc = 1 + state.items.reduce((m,i)=>Math.max(m, +(String(i.uid).replace('u',''))||0),0);
+    $('#limitSel').value = [400,700,1000,1500].includes(s.limit)? String(s.limit):'custom';
+    $('#customWrap').hidden = $('#limitSel').value!=='custom';
+    if($('#limitSel').value==='custom') $('#customLimit').value = s.limit;
+    $('#dlg').close(); render();
+  });
+  $('#dlgBody').querySelectorAll('[data-delkey]').forEach(b=> b.onclick = ()=>{
+    const k = decodeURIComponent(b.dataset.delkey); const st = loadStore(); delete st[k]; saveStore(st); doLoad();
+  });
+}
+function doNew(){
+  state = { nation:state.nation, limit:state.limit, name:'New force', items:[], cat:'infantry',
+            scenario:state.scenario, role:state.role, collections:state.collections.slice() };
+  add(state.nation+'_cmd'); add(state.nation+'_rifle'); add(state.nation+'_rifle');
+  render();
+}
+
+/* =====================================================================
+   AUTO-FILL — generate a legal, scenario-appropriate force to the limit
+   ===================================================================== */
+function autoBuild(){
+  const N = NATIONS[state.nation], nat = state.nation, C = sctx(), lim = effLimit();
+  const defender = C.roleLabel === 'defender';
+  const mobile   = (C.key==='breakthrough' && !defender) || C.key==='flank' || (C.key==='beachhead' && !defender);
+  const armorLight = defender || C.key==='attrition';
+  const cheapRifle = nat==='soviet' ? 16 : 20;
+  state.items = [];
+
+  const room = ()=> lim - totalCost();
+  const push = (o)=>{ state.items.push(Object.assign({ uid:uid(), qty:1, slots:null, spec:null, transportId:null }, o)); };
+  const addSquad = (id, spec)=> push({ defId:id, slots:defaultSlots(findDef(id).kind), spec:spec||null });
+  const addUnit  = (id)=> push({ defId:id });
+  const rifles   = ()=> state.items.filter(i=>findDef(i.defId).kind==='rifle');
+  const freeRifle= ()=> rifles().find(i=>!i.spec);
+
+  // 1 — command + two rifle squads (mandatory core)
+  addSquad(nat+'_cmd');
+  addSquad(nat+'_rifle');
+  addSquad(nat+'_rifle');
+
+  // 2 — support weapons
+  if(room() >= 40) addUnit(nat+'_mg');
+  if(room() >= 50 && !mobile) addUnit(nat+'_mortar');
+
+  // 3 — anti-tank capability
+  const atGun = N.guns.find(g=>srcEnabled(g.src));
+  if(defender && atGun && room() >= atGun.pt + cheapRifle){ addUnit(atGun.id); }
+  else if(freeRifle() && room() >= SPEC_BY_KEY.antitank.pt + 10){ freeRifle().spec = 'antitank'; }
+
+  // 4 — scenario specials
+  if(C.key==='demolition' && freeRifle() && room() >= SPEC_BY_KEY.demolition.pt + 10) freeRifle().spec = 'demolition';
+  if(defender && freeRifle() && room() >= SPEC_BY_KEY.medic.pt + 20) freeRifle().spec = 'medic';
+  if(mobile && freeRifle() && room() >= SPEC_BY_KEY.recon.pt + 20) freeRifle().spec = 'recon';
+
+  // 5 — fortifications (defender only, within the scenario cap; kept modest)
+  if(defender && C.fort > 0){
+    let fb = Math.min(fortBudget(), Math.round(lim * 0.12));
+    if(C.bunker && srcEnabled('Normandy') && fb >= 25 && room() > 25 + cheapRifle){ addUnit('f_bunker'); fb -= 25; }
+    if(fb >= 15 && room() > 15 + cheapRifle){ addUnit('f_pillbox'); fb -= 15; }
+    if(fb >= 8 && room() > 8 + cheapRifle){ addUnit('f_mines'); fb -= 8; }
+    const maxEnt = Math.min(6, Math.max(2, Math.round(fb/5)));
+    let ent = 0;
+    while(ent < maxEnt && fb >= 5 && room() > 5 + cheapRifle){
+      const ex = state.items.find(i=>i.defId==='f_entrench');
+      if(ex) ex.qty++; else addUnit('f_entrench');
+      fb -= 5; ent++;
+    }
+  }
+
+  // 6 — greedy fill: keep buying the most useful legal thing until the
+  //     points are (nearly) gone. Priority order reflects the scenario.
+  const heavyCap  = nat==='germany' ? Math.max(1, Math.floor(lim/500)) : Math.max(1, Math.floor(lim/750));
+  const vehSlots  = Math.max(1, Math.round(lim/250));
+  const armorCap  = Math.round(lim * (armorLight ? 0.22 : mobile ? 0.30 : 0.42));
+  let vehPool = N.vehicles.filter(v=>srcEnabled(v.src));
+  if(mobile) vehPool = vehPool.filter(v=>v.class!=='heavy');
+  if(nat==='japan') vehPool = vehPool.filter(v=>v.class!=='heavy');
+  const tr = TRANSPORTS[nat].find(t=>srcEnabled(t.src));
+  const trCost = tr ? (nat==='usa' ? Math.round(tr.pt*0.8) : tr.pt) : 9999;
+
+  const vehItems = ()=> state.items.filter(i=>findDef(i.defId)._type==='vehicle');
+  const vehCnt   = ()=> vehItems().reduce((a,i)=>a+(i.qty||1),0);
+  const heavyCnt = ()=> vehItems().filter(i=>findDef(i.defId).class==='heavy').reduce((a,i)=>a+(i.qty||1),0);
+  const armorPts = ()=> vehItems().reduce((a,i)=>a+itemCost(i),0);
+  const sqCnt    = ()=> state.items.filter(i=>findDef(i.defId)._type==='squad').length;
+  const teamCnt  = ()=> state.items.filter(i=>['mg','mortar'].includes(findDef(i.defId).kind)).length;
+  const specCnt  = ()=> state.items.filter(i=>i.spec).length;
+  const offCnt   = ()=> state.items.filter(i=>i.slots && i.slots.includes('officer')).length;
+  const fortPts  = ()=> state.items.filter(i=>findDef(i.defId)._type==='fort').reduce((a,i)=>a+itemCost(i),0);
+  const specWish = defender ? ['antitank','medic','engineer','expert','flamethrower','recon']
+                            : ['flamethrower','antitank','recon','engineer','expert','medic'];
+  const rifleCap = Math.max(6, Math.round(lim / 110));
+  const teamCap  = Math.max(2, Math.round(lim / 500));
+
+  let guard = 0;
+  while(room() >= 4 && guard++ < 300){
+    const r = room();
+    const specCap = Math.max(3, Math.round(sqCnt() * 0.6));
+
+    // a) weapon teams
+    if(teamCnt() < teamCap && r >= 21){ addUnit(teamCnt()%2 ? nat+'_mg' : nat+'_mortar'); continue; }
+
+    // b) another armored vehicle — strongest that still fits the armor budget
+    if(vehCnt() < vehSlots && armorPts() < armorCap){
+      const cand = vehPool
+        .filter(v => v.pt <= r && v.pt <= lim/3 && armorPts()+v.pt <= armorCap && (v.class!=='heavy' || heavyCnt() < heavyCap))
+        .sort((a,b)=> b.pt - a.pt);
+      if(cand.length){ addUnit(cand[0].id); continue; }
+    }
+
+    // c) a specialization on a squad that has none
+    const fr = freeRifle();
+    if(fr && specCnt() < specCap){
+      const sp = specWish.find(k => r >= SPEC_BY_KEY[k].pt + 4);
+      if(sp){ fr.spec = sp; continue; }
+    }
+
+    // d) promote a regular to officer in a plain rifle squad (leadership spread)
+    if(offCnt() < 3 && r >= 8){
+      const sq = state.items.find(i=>{ const d=findDef(i.defId);
+        return d.kind==='rifle' && i.slots && !i.slots.includes('officer') && i.slots.includes('regular'); });
+      if(sq){ const idx = sq.slots.indexOf('regular'); sq.slots[idx] = 'officer';
+        if(totalCost() > lim){ sq.slots[idx] = 'regular'; } else continue; }
+    }
+
+    // e) another squad — rifles first, then elite squads once rifles are plentiful
+    if(r >= cheapRifle && rifles().length < rifleCap){ addSquad(nat+'_rifle'); continue; }
+    if(r >= 36 && sqCnt() < rifleCap + 3){ addSquad(nat+'_elite'); continue; }
+
+    // f) transport for a rifle squad without one (attackers / reserves first)
+    if((mobile || C.reserves > 0) && tr){
+      const rt = rifles().find(i=>!i.transportId);
+      if(rt && r >= trCost){ rt.transportId = tr.id; continue; }
+    }
+
+    // g) upgrade a regular to elite (+4)
+    const up = state.items.find(i=>{ const d=findDef(i.defId);
+      return (d.kind==='rifle' || d.kind==='command') && i.slots && i.slots.includes('regular'); });
+    if(up && r >= 4){
+      const idx = up.slots.indexOf('regular'); up.slots[idx] = 'elite';
+      if(totalCost() > lim){ up.slots[idx] = 'regular'; break; }
+      continue;
+    }
+
+    // h) defender: another entrenchment inside the scenario cap
+    if(defender && C.fort > 0 && r >= 5 && fortPts() + 5 <= fortBudget()){
+      const ex = state.items.find(i=>i.defId==='f_entrench');
+      if(ex) ex.qty++; else addUnit('f_entrench');
+      continue;
+    }
+
+    break; // nothing left that helps
+  }
+
+  // 7 — burn any large remainder (big / asymmetric games)
+  const burnVehCap = Math.max(vehSlots, Math.round(lim/180));
+  guard = 0;
+  while(room() >= 60 && vehCnt() < burnVehCap && guard++ < 24){
+    const cand = vehPool
+      .filter(v => v.pt <= room() && v.pt <= lim/3 && (v.class!=='heavy' || heavyCnt() < heavyCap))
+      .sort((a,b)=> b.pt - a.pt);
+    if(!cand.length) break;
+    addUnit(cand[0].id);
+  }
+  guard = 0;
+  while(room() >= 36 && sqCnt() < 40 && guard++ < 60){
+    addSquad(nat + '_elite');
+  }
+  guard = 0;
+  while(room() >= 4 && guard++ < 400){
+    const up = state.items.find(i=>{ const d=findDef(i.defId);
+      return (d.kind==='rifle' || d.kind==='command') && i.slots && i.slots.includes('regular'); });
+    if(up){
+      const idx = up.slots.indexOf('regular'); up.slots[idx] = 'elite';
+      if(totalCost() > lim){ up.slots[idx] = 'regular'; break; }
+      continue;
+    }
+    // no regulars left — promote an elite to officer where allowed (+4)
+    const po = state.items.find(i=>{ const d=findDef(i.defId);
+      return d.kind==='rifle' && i.slots && i.slots.includes('elite') && !i.slots.includes('officer'); });
+    if(!po) break;
+    const idx = po.slots.indexOf('elite'); po.slots[idx] = 'officer';
+    if(totalCost() > lim){ po.slots[idx] = 'elite'; break; }
+  }
+
+  // safety — trim if somehow over
+  while(totalCost() > lim){
+    const i = state.items.map(x=>findDef(x.defId).kind).lastIndexOf('rifle');
+    if(i < 0) break;
+    state.items.splice(i, 1);
+  }
+
+  state.name = `${N.label} — ${C.name}${C.roleLabel?` (${C.roleLabel})`:''}`;
+  state.cat = 'infantry';
+  render();
+}
+
+function confirmAuto(){
+  const C = sctx();
+  openDlg('Auto-fill force', `
+    <p style="font-size:13.5px; color:var(--ink-soft); margin-top:0">
+      Generate a legal force for <b>${NATIONS[state.nation].label}</b> in
+      <b>${esc(C.name)}${C.roleLabel?` (${C.roleLabel})`:''}</b> at
+      <b>${effLimit()} pts</b>. This replaces your current list.</p>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px">
+      <button id="autoGo" class="add-btn" style="background:var(--olive); color:#F1EDDF; border-color:var(--olive)">Generate</button>
+      <button id="autoCancel" class="add-btn">Cancel</button>
+    </div>`);
+  $('#autoGo').onclick = ()=>{ $('#dlg').close(); autoBuild(); };
+  $('#autoCancel').onclick = ()=> $('#dlg').close();
+}
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* =====================================================================
+   REVIEW SHEET
+   ===================================================================== */
+function figureCount(){
+  let f = 0;
+  state.items.forEach(it=>{
+    const d = findDef(it.defId); if(!d || d._type!=='squad') return;
+    if(d.kind==='mg'||d.kind==='mortar'){ f += 2; return; }
+    f += it.slots.filter(s=>s && s!=='empty').length;
+  });
+  return f;
+}
+function compTile(n, l){ return `<div class="comp-tile"><div class="n">${n}</div><div class="l">${l}</div></div>`; }
+
+/* itemise every purchase inside one entry: figures, weapon crew,
+   specialization token, transport, or a multi-model quantity. */
+function purchaseLines(it, d){
+  const out = [];
+  if(d._type==='squad'){
+    if(d.kind==='mg' || d.kind==='mortar'){
+      out.push({ label:(d.kind==='mg'?'Machine gun crew':'Mortar crew')+' — '+d.stat, pts:(d.kind==='mg'?17:21) });
+    } else {
+      const c = {regular:0, elite:0, officer:0};
+      it.slots.forEach(s=>{ if(c[s]!=null) c[s]++; });
+      const rc = state.nation==='soviet' ? 4 : 5;
+      if(c.regular) out.push({ label:`${c.regular} × Regular Infantry — ${FIG.regular.stat}`, pts:c.regular*rc });
+      if(c.elite)   out.push({ label:`${c.elite} × Elite Infantry — ${FIG.elite.stat}`,       pts:c.elite*FIG.elite.cost });
+      if(c.officer) out.push({ label:`${c.officer} × Officer — ${FIG.officer.stat}`,           pts:c.officer*FIG.officer.cost });
+    }
+    if(it.spec){ const sp = SPEC_BY_KEY[it.spec]; out.push({ label:`${sp.name} specialization — ${sp.rule}`, pts:sp.pt }); }
+    if(it.transportId){
+      const t = TRANSPORTS[state.nation].find(x=>x.id===it.transportId);
+      if(t){ const tc = state.nation==='usa' ? Math.round(t.pt*0.8) : t.pt;
+        out.push({ label:`Transport — ${esc(t.name)} · ${t.stat}`, pts:tc }); }
+    }
+  } else {
+    const tier = d.tier && d.tier!=='core' ? ` · [${TIER_LABEL[d.tier]}]` : '';
+    out.push({ label:`${d.stat}${tier}`, pts:d.pt });
+    if((it.qty||1)>1) out.push({ label:`quantity ${it.qty} (× ${d.pt} pts)`, pts:d.pt*((it.qty||1)-1) });
+  }
+  return out;
+}
+
+function reviewRow(it){
+  const d = findDef(it.defId);
+  const cost = itemCost(it);
+  let name = esc(d.name) + squadLabel(it, d);
+  if(d._type!=='squad' && (it.qty||1)>1) name += ` ×${it.qty}`;
+  const lines = purchaseLines(it, d).map(b=>
+    `<div><span>${b.label}</span><span>${b.pts} pts</span></div>`).join('');
+  return `<div class="sheet-row">
+    <span class="nm">${name}</span>
+    <span class="ct">${cost} pts</span>
+    <div class="sheet-break">${lines}</div>
+  </div>`;
+}
+
+function buildReview(){
+  const el = $('#view-review');
+  const N = NATIONS[state.nation], C = sctx(), lim = effLimit(), used = totalCost();
+  const squads = state.items.filter(i=>findDef(i.defId)?._type==='squad');
+  const teams  = squads.filter(i=>['mg','mortar'].includes(findDef(i.defId).kind)).length;
+  const veh    = state.items.filter(i=>findDef(i.defId)?._type==='vehicle').reduce((a,i)=>a+(i.qty||1),0);
+  const guns   = state.items.filter(i=>findDef(i.defId)?._type==='gun').reduce((a,i)=>a+(i.qty||1),0);
+  const specs  = squads.filter(i=>i.spec).length;
+  const trans  = squads.filter(i=>i.transportId).length;
+  const checks = validate();
+  const bad = checks.filter(c=>c.s==='fail').length;
+
+  let h = `<div class="sheet">
+    <div class="sheet-actions">
+      <button id="pdfBtn" type="button">⬇ Save as PDF</button>
+      <button id="reviewBack" type="button">Back to builder</button>
+    </div>
+    <div class="sheet-head">
+      <h2>${esc(state.name)}</h2>
+      <div class="sheet-meta">
+        <span>${N.label}</span>
+        <span>Doctrine · ${esc(N.doctrine.name)}</span>
+        <span>${esc(C.name)}${C.roleLabel?` — ${C.roleLabel}`:''}</span>
+        <span>${used} / ${lim} pts${lim!==state.limit?`  ·  base ${state.limit}`:''}</span>
+        <span>Battle Builder v${APP_VERSION}</span>
+      </div>
+    </div>
+    <div class="sheet-body">
+      <div class="sheet-brief">
+        <b>Deployment.</b> ${C.deploy}<br>
+        <b>Victory.</b> ${C.vc}<br>
+        ${C.reserves>0?`<b>Reserves.</b> ~${Math.round(C.reserves*100)}% (${Math.round(lim*C.reserves)} pts) start off the board.<br>`:''}
+        ${C.fort>0
+          ? `<b>Fortification.</b> up to ${fortBudget()} pts${C.freeEntrench?` + ${C.freeEntrench} free entrenchment(s)`:''}.`
+          : `<b>Fortification.</b> not allowed in this scenario.`}
+      </div>
+      <div class="sheet-check">
+        ${checks.map(c=>`<span class="check ${c.s}"><span class="dot ${c.s}"></span>${c.t}</span>`).join('')}
+      </div>
+      <div class="comp-tiles">
+        ${compTile(squads.length-teams,'Squads')}
+        ${compTile(teams,'Weapon teams')}
+        ${compTile(figureCount(),'Figures')}
+        ${compTile(veh,'Vehicles')}
+        ${compTile(guns,'Guns')}
+        ${compTile(specs,'Specializations')}
+        ${compTile(trans,'Transports')}
+      </div>`;
+
+  const groups = { command:'Command', infantry:'Infantry', weapons:'Weapon Teams', vehicle:'Vehicles', gun:'Guns &amp; Emplacements', transport:'Transport', fort:'Fortifications' };
+  const byGroup = {};
+  state.items.forEach(it=>{ const d=findDef(it.defId); if(!d) return; (byGroup[d.cat||d._type] ||= []).push(it); });
+  let any = false;
+  for(const [gk,gl] of Object.entries(groups)){
+    if(!byGroup[gk] || !byGroup[gk].length) continue;
+    any = true;
+    h += `<h3>${gl}</h3>`;
+    for(const it of byGroup[gk]) h += reviewRow(it);
+  }
+  if(!any) h += `<p class="empty-note">No units yet — add some in the Builder.</p>`;
+
+  h += `<div class="sheet-total"><span>Total${bad?` · ${bad} issue${bad>1?'s':''} to fix`:''}</span><span class="big">${used} / ${lim} pts</span></div>
+      <p class="sheet-hint">To save a PDF: press <b>Save as PDF</b> (or Ctrl/⌘-P) and choose <b>Save as PDF</b> as the destination in your browser's print dialog.</p>
+    </div></div>`;
+
+  el.innerHTML = h;
+  $('#pdfBtn').onclick = ()=> window.print();
+  $('#reviewBack').onclick = ()=> switchView('build');
+}
+
+/* =====================================================================
+   COMPENDIUM
+   ===================================================================== */
+const TIER_LABEL = { core:'In the game', ext:'House rule', fan:'Fan' };
+function refRows(arr, kind, showTier){
+  return arr.map(u=>`<tr>
+    <td>${u.name}</td>
+    <td class="mono" style="font-size:12px">${u.stat||''}</td>
+    <td class="src">${u.src}</td>
+    ${showTier ? `<td class="src" style="color:${u.tier==='core'?'var(--ok)':u.tier==='fan'?'var(--oxide)':'var(--brass)'}">${TIER_LABEL[u.tier]||'In the game'}</td>` : ''}
+    <td class="num">${u.pt!=null? u.pt : (kind==='squad'?'from '+ (u.kind==='command'?28:u.kind==='elite'?36:u.kind==='mg'?17:u.kind==='mortar'?21:20):'')}</td>
+  </tr>`).join('');
+}
+function buildCompendium(){
+  const el = $('#view-comp');
+  let h = '';
+
+  h += `<section><h2>About this system</h2>
+    <p class="lead">Tide of Iron shipped without a points system — its battles are scenario-based. The <b>Battle Builder</b> is a house rule that lets you build your own reasonably balanced forces across every expansion, the way Bolt Action, Flames of War and Warhammer do. Points are derived from each unit’s firepower, range, armor, mobility and special rules.</p>
+    <div class="callout">
+      <b>What is real:</b> the unit list is split three ways. <b style="color:var(--ok)">In the game</b> = a physical component or an official unit card. <b style="color:var(--brass)">House rule</b> = added by this project for breadth (like a Warhammer list) — not in the box. <b style="color:var(--oxide)">Fan</b> = from the unofficial Tail of the Dragon. Doctrines, points and order of battle are all house rules; ToI has none of them officially. ToI also has no on-board field artillery — artillery is off-board via Strategy cards and is not part of this points system.<br><br>
+      <b>Points formula (rough):</b> points = base value + (firepower vs infantry × 1.5) + (firepower vs vehicle × 2) + (armor × 6, +15 / +30 for thick / extra-thick) + mobility + special rules.<br>
+      <b>Figures:</b> Regular 5 · Elite 9 · Officer 13 · MG team 17 · Mortar team 21.
+    </div>
+  </section>`;
+
+  h += `<section><h2>Games &amp; expansions</h2>
+    <div class="tablewrap"><table class="ref"><thead><tr><th>Release</th><th>Year · publisher</th><th>Adds</th></tr></thead><tbody>
+    ${EXPANSIONS.map(r=>`<tr><td><b>${r[0]}</b></td><td class="src">${r[1]}</td><td style="font-size:12.5px">${r[2]}</td></tr>`).join('')}
+    </tbody></table></div>
+  </section>`;
+
+  h += `<section><h2>Reading the stat line</h2>
+    <p class="lead">${STAT_LEGEND} ToI unit cards carry two target profiles because range <i>and</i> firepower differ by target — e.g. a US machine-gun team fires at infantry at range 5 with 3 dice, but at vehicles only at range 3 with 2 dice. Plain infantry can only hit a vehicle when adjacent (Veh 1/1) — that is what the Anti-Tank token fixes.</p>
+    <p class="lead" style="font-size:12.5px">Where the FFG (2008) and 1A "Next Wave / Tools of War" (2015) editions give a unit different numbers, this table follows the FFG values.</p>
+  </section>`;
+
+  h += `<section><h2>Infantry — figures &amp; teams (all nations)</h2>
+    <p class="lead">Squads are built on a base: up to 4 light figures <i>or</i> 2 heavy weapon teams. A specialized squad may hold at most one specialization, no heavy weapon, and may not swap figures.</p>
+    <div class="tablewrap"><table class="ref"><thead><tr><th>Unit</th><th>Stats</th><th>Source</th><th class="num">Pts</th></tr></thead><tbody>
+      <tr><td>Regular Infantry</td><td class="mono" style="font-size:12px">${FIG.regular.stat}</td><td class="src">Base</td><td class="num">5</td></tr>
+      <tr><td>Elite Infantry</td><td class="mono" style="font-size:12px">${FIG.elite.stat}</td><td class="src">Base</td><td class="num">9</td></tr>
+      <tr><td>Officer</td><td class="mono" style="font-size:12px">${FIG.officer.stat}</td><td class="src">Base</td><td class="num">13</td></tr>
+      <tr><td>Machine Gun Team (heavy)</td><td class="mono" style="font-size:12px">Inf 5/3 · Veh 3/2 · Mv 4 · Rapid Op Fire</td><td class="src">Base</td><td class="num">17</td></tr>
+      <tr><td>Mortar Team (heavy)</td><td class="mono" style="font-size:12px">Inf 8/4 · Veh 8/2 · Mv 4 · area / indirect</td><td class="src">Base</td><td class="num">21</td></tr>
+    </tbody></table></div>
+  </section>`;
+
+  h += `<section><h2>Specialization tokens</h2>
+    <p class="lead">The small pieces you attach to an infantry squad during setup. Official rules: <i>“A squad may have a <b>single</b> specialization token… A squad that contains any figure with the <b>heavy infantry weapon</b> trait (the mortar crew and the machine gun crew) may <b>never</b> be assigned a specialization token.”</i> The builder enforces both. The base game has four — Anti-Tank, Engineer, Flamethrower, Medic. Days of the Fox adds Recon + the Alpha / Bravo experience units; Normandy adds Demolitions; Fury of the Bear adds Expert + Saboteur. The Next Wave box bundles them all.</p>
+    ${SPECS.map(s=>`<div class="spec-card">
+      <h4>${s.name} <span class="src">${s.src}</span> <span class="pt">+${s.pt} pts</span></h4>
+      <p>${s.rule}</p></div>`).join('')}
+    <div class="callout" style="margin-top:10px">
+      <b>Experience tokens (Days of the Fox):</b> Bronze Star, Silver Star and Medal of Honor — the 1–3 star markers Alpha / Bravo squads upgrade with in play.<br>
+      <b>Munitions tokens (Fury of the Bear, optional):</b> go on <i>vehicles / equipment</i>, not infantry —
+      <b>HE</b> (high explosive, hits on 4–6, no long range), <b>AP-B</b> (+1 vs vehicles at all ranges),
+      <b>AP-C</b> (+2 vs vehicles up close, −1 at long range), <b>Smoke</b> (lays smoke in the target space).
+    </div>
+  </section>`;
+
+  h += `<section><h2>Units by nation</h2>
+    <p class="lead">Use the <b>Sets</b> row at the top of the builder to choose which boxes you can field from — All expansions, or just the ones you own (Days of the Fox, Normandy, Fury of the Bear, Stalingrad). <b style="color:var(--ok)">In the game</b> = a physical component or official unit card (FFG / 1A). <b style="color:var(--brass)">House rule</b> = this project’s addition, not in any box. <b style="color:var(--oxide)">Fan</b> = from the unofficial Tail of the Dragon. The Soviet, British and Japanese armies need their home set (Fury of the Bear / Days of the Fox / Tail of the Dragon) — picking that nation switches it on automatically.</p>`;
+  for(const [nk, N] of Object.entries(NATIONS)){
+    h += `<h3 style="margin:18px 0 6px; font-size:19px; text-transform:uppercase; letter-spacing:.04em">${N.label}${N.fan?' <span class="src" style="color:var(--oxide)">fan nation</span>':''}</h3>
+      <div class="tablewrap"><table class="ref"><thead><tr><th>Unit</th><th>Stats</th><th>Source</th><th>Tier</th><th class="num">Pts</th></tr></thead><tbody>
+        ${refRows(N.squads.map(s=>({...s, tier:s.src.startsWith('fan')?'fan':'core'})), 'squad', true)}
+        ${refRows(TRANSPORTS[nk], 'v', true)}
+        ${refRows(N.vehicles, 'v', true)}
+        ${refRows(N.guns, 'v', true)}
+      </tbody></table></div>`;
+  }
+
+  h += `<section><h2>Fortifications &amp; obstacles</h2>
+    <div class="tablewrap"><table class="ref"><thead><tr><th>Element</th><th>Effect</th><th>Source</th><th class="num">Pts</th></tr></thead><tbody>
+    ${refRows(FORTS, 'v')}
+    </tbody></table></div>
+    <p class="lead" style="margin-top:8px">Available only in scenarios that allow it (see the table below). Free entrenchments from the scenario cost no points.</p>
+  </section>`;
+
+  h += `<section><h2>Scenarios</h2>
+    <p class="lead">The builder starts from classic board-wargame scenarios (Bolt Action, Flames of War and similar). The scenario sets the effective points (attacker / defender), whether fortification is allowed, how large a reserve starts off the board, plus deployment and victory conditions — and it drives the order-of-battle checklist.</p>
+    <div class="tablewrap"><table class="ref"><thead><tr>
+      <th>Scenario</th><th>Type</th><th>Role</th><th class="num">Points</th><th class="num">Fortif.</th><th class="num">Reserve</th><th>Victory</th>
+    </tr></thead><tbody>
+    ${SCENARIOS.map(s=>{
+      const rows = s.asym ? [['Attacker', s.attacker],['Defender', s.defender]] : [['Both', s]];
+      return rows.map((r,i)=>`<tr>
+        ${i===0?`<td rowspan="${rows.length}"><b>${s.name}</b></td><td rowspan="${rows.length}" class="src">${s.src}</td>`:''}
+        <td>${r[0]}</td>
+        <td class="num">${r[1].mult? (r[1].mult>1?'+':'')+Math.round((r[1].mult-1)*100)+'%' : '100%'}</td>
+        <td class="num">${r[1].fort? Math.round(r[1].fort*100)+'%'+(r[1].freeEntrench?` +${r[1].freeEntrench}`:'') : '—'}</td>
+        <td class="num">${r[1].reserves? Math.round(r[1].reserves*100)+'%':'—'}</td>
+        ${i===0?`<td rowspan="${rows.length}" style="font-size:12px">${s.vc}</td>`:''}
+      </tr>`).join('');
+    }).join('')}
+    </tbody></table></div>
+  </section>`;
+
+  h += `<section><h2>Order of battle</h2>
+    <div class="grid2">
+      <div class="callout"><b>Mandatory</b><br>1 × command squad<br>2 × infantry / weapon squad</div>
+      <div class="callout"><b>Per 250 pts of the limit — up to</b><br>+2 infantry / weapon squads<br>+1 vehicle · +1 gun / emplacement</div>
+      <div class="callout"><b>Transport</b><br>1 per infantry squad. Assigned to the squad — does not use a vehicle slot.</div>
+      <div class="callout"><b>Caps</b><br>Heavy tanks: 1 per 750 pts (Germany 1 per 500).<br>No single unit over ⅓ of the limit.<br>Specialized squads: half of your squads, rounded up.</div>
+    </div>
+  </section>`;
+
+  h += `<section><h2>Sources</h2>
+    <p class="lead">Unit lists and component overviews were checked against:</p>
+    <ul style="font-size:13px; color:var(--ink-soft); line-height:1.7; max-width:74ch">
+      <li>Fantasy Flight Games rulebooks (incl. <i>Fury of the Bear</i> and <i>Normandy</i> — component lists and unit cards)</li>
+      <li>1A Games: <i>Next Wave</i> Rules of Play, <i>Tools of War</i>, and the Kickstarter bonus booklet</li>
+      <li>The fan site <b>commandsandcolors.net/tideofiron</b> — component overviews per expansion</li>
+      <li>BoardGameGeek component lists for each release</li>
+      <li>Universal Head / Order of Gamers player aid v4 (core game + Days of the Fox + Normandy)</li>
+    </ul>
+    <p class="lead">Doctrines, points, order of battle and scenario modifiers are this project’s own house rules.</p>
+  </section>`;
+
+  h += `<section><h2>Version history</h2>
+    <p class="lead">Version <b>1.N</b>, where <b>N</b> is the number of revisions since the first release. Currently <b>v${APP_VERSION}</b>.</p>
+    <div class="tablewrap"><table class="ref"><thead><tr><th class="num">Version</th><th>Change</th></tr></thead><tbody>
+    ${CHANGELOG.slice().reverse().map(r=>`<tr><td class="num">v${r[0]}</td><td style="font-size:12.5px">${r[1]}</td></tr>`).join('')}
+    </tbody></table></div>
+  </section>`;
+
+  el.innerHTML = h;
+}
+
+/* =====================================================================
+   WIRE UP
+   ===================================================================== */
+function switchView(v){
+  const views = { build:'#view-build', review:'#view-review', comp:'#view-comp' };
+  for(const [k,sel] of Object.entries(views)) $(sel).hidden = (k!==v);
+  $('#tab-build').setAttribute('aria-selected', v==='build');
+  $('#tab-review').setAttribute('aria-selected', v==='review');
+  $('#tab-comp').setAttribute('aria-selected', v==='comp');
+  if(v==='comp') buildCompendium();
+  if(v==='review') buildReview();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+$('#tab-build').onclick = ()=> switchView('build');
+$('#tab-review').onclick = ()=> switchView('review');
+$('#tab-comp').onclick = ()=> switchView('comp');
+
+$('#nationSel').onchange = e=>{
+  state.nation = e.target.value;
+  ensureNationColls();
+  state.items = state.items.filter(i=> findDef(i.defId));
+  if(!state.items.some(i=>findDef(i.defId)?.kind==='command')) add(state.nation+'_cmd');
+  render();
+};
+$('#limitSel').onchange = e=>{
+  if(e.target.value==='custom'){ $('#customWrap').hidden = false; state.limit = +$('#customLimit').value||700; }
+  else { $('#customWrap').hidden = true; state.limit = +e.target.value; }
+  render();
+};
+$('#customLimit').oninput = e=>{ state.limit = Math.max(100, +e.target.value||700); render(); };
+$('#listName').oninput = e=>{ state.name = e.target.value; };
+$('#scenarioSel').onchange = e=>{
+  state.scenario = e.target.value;
+  if(!scenByKey(state.scenario).asym) state.role = 'attacker';
+  if(state.cat==='fort' && sctx().fort<=0) state.cat = 'infantry';
+  render();
+};
+$('#roleSel').onchange = e=>{ state.role = e.target.value; render(); };
+
+$('#btnAuto').onclick = confirmAuto;
+$('#btnSave').onclick = doSave;
+$('#btnLoad').onclick = doLoad;
+$('#btnNew').onclick = doNew;
+$('#btnReview').onclick = ()=> switchView('review');
+$('#btnExport').onclick = ()=>{
+  openDlg('Export force list',
+    `<p style="font-size:13px;color:var(--ink-soft);margin-top:0">Plain-text list — select and copy. For a formatted PDF use <b>Review → Save as PDF</b>.</p>
+     <textarea readonly id="expTA"></textarea>`);
+  const t = $('#expTA'); if(t){ t.value = armyText(); }
+};
+$('#dlgClose').onclick = ()=> $('#dlg').close();
+$('#dlg').addEventListener('close', ()=>{ $('#dlgBody').innerHTML=''; });
+
+/* theme toggle */
+const themeBtn = $('#themeBtn');
+function curTheme(){ return document.documentElement.getAttribute('data-theme'); }
+themeBtn.onclick = ()=>{
+  const now = curTheme();
+  const next = now==='dark' ? 'light' : now==='light' ? 'dark'
+    : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', next);
+  try{ localStorage.setItem('toi-theme', next); }catch(e){}
+};
+try{ const t = localStorage.getItem('toi-theme'); if(t) document.documentElement.setAttribute('data-theme', t); }catch(e){}
+
+$('#verBadge').textContent = 'v' + APP_VERSION;
+$('#footNote').innerHTML = `<b>Tide of Iron · Battle Builder</b> <span class="mono">v${APP_VERSION}</span> — a fan-made, unofficial points and army-builder system for <i>Tide of Iron</i> (Fantasy Flight Games / 1A Games). Not affiliated with the rights holders. Saved lists live only in your own browser. Unit data from FFG / 1A rulebooks and commandsandcolors.net/tideofiron.`;
+
+seedSample();
+render();
+</script>
+</body>
+</html>
