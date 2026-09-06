@@ -75,3 +75,24 @@ test("renders validation issues and clears them when valid", () => {
   assert.match(validMarkup.summaryHtml, /Roster is legal for this scenario/);
   assert.equal(validMarkup.issuesHtml, "");
 });
+
+test("escapes html in validation markup", () => {
+  const markup = buildValidationMarkup({
+    scenario: {
+      name: 'Scenario <Alpha>',
+      description: 'Use & hold the "bridge"',
+      maxPoints: 12,
+      maxUnits: 4,
+    },
+    totalPoints: 3,
+    unitCount: 1,
+    isValid: false,
+    issues: ['Missing <leader> & "support"'],
+  });
+
+  assert.match(markup.summaryHtml, /Scenario &lt;Alpha&gt;/);
+  assert.match(markup.summaryHtml, /Use &amp; hold the &quot;bridge&quot;/);
+  assert.doesNotMatch(markup.summaryHtml, /<Alpha>/);
+  assert.match(markup.issuesHtml, /Missing &lt;leader&gt; &amp; &quot;support&quot;/);
+  assert.doesNotMatch(markup.issuesHtml, /<leader>/);
+});

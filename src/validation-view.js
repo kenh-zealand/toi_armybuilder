@@ -1,7 +1,18 @@
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 export function buildValidationMarkup(validation) {
   return {
     summaryHtml: `
-      <p><strong>${validation.scenario.name}</strong>: ${validation.scenario.description}</p>
+      <p><strong>${escapeHtml(validation.scenario.name)}</strong>: ${escapeHtml(
+        validation.scenario.description,
+      )}</p>
       <p>${validation.totalPoints}/${validation.scenario.maxPoints} points · ${
         validation.unitCount
       }/${validation.scenario.maxUnits} units</p>
@@ -11,6 +22,8 @@ export function buildValidationMarkup(validation) {
           : "Roster needs adjustments."
       }</p>
     `,
-    issuesHtml: validation.issues.map((issue) => `<li>${issue}</li>`).join(""),
+    issuesHtml: validation.issues
+      .map((issue) => `<li>${escapeHtml(issue)}</li>`)
+      .join(""),
   };
 }
