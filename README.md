@@ -91,6 +91,12 @@ which regenerates `index.html` (skeleton + PWA wiring), `sw.js` (cache name
 stamped with the current `APP_VERSION`), and the PNG icons. `manifest.webmanifest`,
 `icon.svg` and `favicon.svg` are static.
 
+## Rebuild it from scratch
+
+[`BUILD_PROMPT.md`](BUILD_PROMPT.md) is a complete specification — data,
+rules, features and design — written so another chatbot can recreate this
+exact app (current version). Paste it in and iterate.
+
 ## Version
 
 See the **Compendium → Version history** section, or `APP_VERSION` near the
