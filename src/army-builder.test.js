@@ -71,8 +71,10 @@ test("renders validation issues and clears them when valid", () => {
   );
 
   assert.match(invalidMarkup.summaryHtml, /Roster needs adjustments/);
+  assert.match(invalidMarkup.summaryHtml, /status-warning/);
   assert.match(invalidMarkup.issuesHtml, /support unit/);
   assert.match(validMarkup.summaryHtml, /Roster is legal for this scenario/);
+  assert.match(validMarkup.summaryHtml, /status-ok/);
   assert.equal(validMarkup.issuesHtml, "");
 });
 

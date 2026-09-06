@@ -4,6 +4,7 @@ import {
   getUnitsForSelection,
   validateRoster,
 } from "./army-builder.js";
+import { escapeHtml } from "./html.js";
 import { buildValidationMarkup } from "./validation-view.js";
 
 const state = {
@@ -25,9 +26,9 @@ function renderSelect(select, options, value, getLabel = (option) => option) {
   select.innerHTML = options
     .map(
       (option) =>
-        `<option value="${option.id ?? option}" ${
+        `<option value="${escapeHtml(option.id ?? option)}" ${
           (option.id ?? option) === value ? "selected" : ""
-        }>${getLabel(option)}</option>`,
+        }>${escapeHtml(getLabel(option))}</option>`,
     )
     .join("");
 }
@@ -38,10 +39,10 @@ function renderExpansionOptions() {
       (expansion) => `<label>
         <input
           type="checkbox"
-          value="${expansion.id}"
+          value="${escapeHtml(expansion.id)}"
           ${state.enabledExpansions.includes(expansion.id) ? "checked" : ""}
         />
-        ${expansion.name}
+        ${escapeHtml(expansion.name)}
       </label>`,
     )
     .join("");
@@ -54,12 +55,14 @@ function renderAvailableUnits() {
       (unit) => `<li>
         <div class="card-row">
           <div>
-            <strong>${unit.name}</strong>
-            <div class="meta">${unit.points} pts · ${unit.roles.join(", ")} · ${
-              expansions.find((expansion) => expansion.id === unit.source)?.name
-            }</div>
+            <strong>${escapeHtml(unit.name)}</strong>
+            <div class="meta">${unit.points} pts · ${escapeHtml(
+              unit.roles.join(", "),
+            )} · ${escapeHtml(
+              expansions.find((expansion) => expansion.id === unit.source)?.name ?? unit.source,
+            )}</div>
           </div>
-          <button type="button" data-add="${unit.id}">Add</button>
+          <button type="button" data-add="${escapeHtml(unit.id)}">Add</button>
         </div>
       </li>`,
     )
@@ -72,23 +75,30 @@ function renderAvailableUnits() {
 }
 
 function renderRoster() {
-  rosterList.innerHTML = state.roster
-    .map((unitId, index) => {
+  const rosterMarkup = state.roster
+    .flatMap((unitId, index) => {
       const unit = units.find((entry) => entry.id === unitId);
+      if (!unit) {
+        return [];
+      }
 
-      return `<li>
+      return [`<li>
         <div class="card-row">
           <div>
-            <strong>${unit.name}</strong>
-            <div class="meta">${unit.points} pts · ${unit.roles.join(", ")}</div>
+            <strong>${escapeHtml(unit.name)}</strong>
+            <div class="meta">${unit.points} pts · ${escapeHtml(
+              unit.roles.join(", "),
+            )}</div>
           </div>
           <button type="button" class="secondary" data-remove="${index}">Remove</button>
         </div>
-      </li>`;
+      </li>`];
     })
     .join("");
 
-  if (!state.roster.length) {
+  rosterList.innerHTML = rosterMarkup;
+
+  if (!rosterMarkup) {
     rosterList.innerHTML = "<li>Your roster is empty.</li>";
   }
 }
@@ -146,7 +156,11 @@ expansionOptions.addEventListener("change", (event) => {
 });
 
 availableUnitsList.addEventListener("click", (event) => {
-  const unitId = event.target.dataset.add;
+  const button =
+    event.target instanceof Element
+      ? event.target.closest("button[data-add]")
+      : null;
+  const unitId = button?.dataset.add;
   if (!unitId) {
     return;
   }
@@ -156,7 +170,11 @@ availableUnitsList.addEventListener("click", (event) => {
 });
 
 rosterList.addEventListener("click", (event) => {
-  const index = Number.parseInt(event.target.dataset.remove ?? "", 10);
+  const button =
+    event.target instanceof Element
+      ? event.target.closest("button[data-remove]")
+      : null;
+  const index = Number.parseInt(button?.dataset.remove ?? "", 10);
   if (Number.isNaN(index)) {
     return;
   }
