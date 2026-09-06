@@ -353,15 +353,46 @@
 
   /* ---- Print (Review sheet only → "Save as PDF") ---- */
   @media print{
-    body{background:#fff; color:#000}
+    /* Force a pure black-on-white palette regardless of the on-screen theme,
+       so the PDF is crisp even with "Background graphics" turned off.
+       !important on the custom properties beats the dark-mode :root rules. */
+    :root{
+      --ground:#fff !important; --paper:#fff !important; --paper-2:#fff !important; --sink:#e6e6e6 !important;
+      --ink:#000 !important; --ink-soft:#161616 !important; --ink-faint:#2e2e2e !important;
+      --line:#8a8a8a !important; --line-strong:#4a4a4a !important;
+      --olive:#232a17 !important; --olive-bright:#232a17 !important;
+      --brass:#5c4708 !important; --oxide:#7a2814 !important;
+      --ok:#22421a !important; --warn:#5c4708 !important; --fail:#7a2814 !important;
+      --shadow:none !important;
+    }
+    html, body{background:#fff !important; color:#000 !important;
+      -webkit-print-color-adjust:exact; print-color-adjust:exact;}
     header.masthead, footer.foot, .theme-toggle, .modes,
     #view-build, #view-comp, .sheet-actions, .sheet-hint{display:none !important}
     #view-review{display:block !important}
     .wrap{padding:0; max-width:none}
-    .sheet{box-shadow:none; border:0; max-width:none; border-radius:0}
-    .sheet-head{-webkit-print-color-adjust:exact; print-color-adjust:exact}
-    .sheet h3{break-after:avoid}
+
+    .sheet{box-shadow:none; border:0; max-width:none; border-radius:0; overflow:visible}
+    /* the olive header prints as bold black-on-white, no colour fill needed */
+    .sheet-head{background:#fff !important; color:#000 !important; padding:0 0 10px;
+      border-bottom:2.5px solid #000; margin-bottom:12px}
+    .sheet-head h2{color:#000 !important}
+    .sheet-meta{color:#1a1a1a !important; font-weight:600}
+    .sheet-body{padding:0}
+    .sheet-brief, .sheet-brief b{color:#000 !important}
+    .sheet-brief{border-left:3px solid #000}
+    .sheet-check .check, .sheet-check .check span{color:#000 !important}
+    .sheet-check .dot{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .comp-tile{border:1px solid #999}
+    .comp-tile .n, .comp-tile .l{color:#000 !important}
+    .sheet h3{color:#000 !important; border-bottom:1.5px solid #000; break-after:avoid}
     .sheet-row{break-inside:avoid}
+    .sheet-row .nm, .sheet-row .ct{color:#000 !important; font-weight:700}
+    .sheet-break > div{color:#1a1a1a !important; border-left:2px solid #000}
+    .sheet-break > div > span:first-child{color:#000 !important}
+    .sheet-break > div > span:last-child{color:#000 !important}
+    .sheet-total, .sheet-total .big{color:#000 !important; border-top:2px solid #000}
+    a{color:#000 !important; text-decoration:none}
   }
 </style>
 
@@ -475,7 +506,7 @@
 
 /* Version = 1.<number of revisions since the first release>.
    Bump the last entry's number and add a CHANGELOG line on every revision. */
-const APP_VERSION = '1.11';
+const APP_VERSION = '1.12';
 const CHANGELOG = [
   ['1.0', 'First release — builder, order-of-battle checks, compendium.'],
   ['1.1', 'Scenario-driven: 9 board-wargame scenarios set effective points, fortification, reserves and the checklist.'],
@@ -489,6 +520,7 @@ const CHANGELOG = [
   ['1.9', 'Collections row — tick which sets you own (All expansions, Days of the Fox, Normandy, Fury of the Bear, Stalingrad, Tools of War, house-rule, fan) to control which units you can field.'],
   ['1.10', 'Confirmed against the rulebook: a squad with a heavy infantry weapon may never take a specialization token — enforced and cited in the compendium.'],
   ['1.11', 'Readability pass — IBM Plex Sans body text, larger type, a brighter paper and much darker ink so the content stops blending into the background, especially on mobile.'],
+  ['1.12', 'PDF / print fix — the Review sheet now prints pure black‑on‑white regardless of the on‑screen theme, so the exported PDF is crisp even with "Background graphics" off.'],
 ];
 
 /* =====================================================================
