@@ -506,7 +506,7 @@
 
 /* Version = 1.<number of revisions since the first release>.
    Bump the last entry's number and add a CHANGELOG line on every revision. */
-const APP_VERSION = '1.12';
+const APP_VERSION = '1.13';
 const CHANGELOG = [
   ['1.0', 'First release — builder, order-of-battle checks, compendium.'],
   ['1.1', 'Scenario-driven: 9 board-wargame scenarios set effective points, fortification, reserves and the checklist.'],
@@ -521,6 +521,7 @@ const CHANGELOG = [
   ['1.10', 'Confirmed against the rulebook: a squad with a heavy infantry weapon may never take a specialization token — enforced and cited in the compendium.'],
   ['1.11', 'Readability pass — IBM Plex Sans body text, larger type, a brighter paper and much darker ink so the content stops blending into the background, especially on mobile.'],
   ['1.12', 'PDF / print fix — the Review sheet now prints pure black‑on‑white regardless of the on‑screen theme, so the exported PDF is crisp even with "Background graphics" off.'],
+  ['1.13', 'Compendium — added the anti-tank gun / Equipment rules: manning and firing, moving one space with the crew, the optional vehicle limber / tow rule, capture, and squad transport.'],
 ];
 
 /* =====================================================================
@@ -804,7 +805,7 @@ const CAT_NOTE = {
   weapons:'Heavy weapons count as a 2-crew team and fill a whole base. Official rule: a squad with a heavy infantry weapon may <b>never</b> be assigned a specialization token, and cannot do Fire &amp; Movement or Assault.',
   spec:'The small tokens you attach to an infantry squad during setup — one per squad, never on a weapon team. Base game has four; the rest came with the expansions. Assign from here or from the squad’s row in the force panel.',
   vehicle:'About 1 vehicle per 250 pts. Heavy tanks: max 1 per 750 pts (Germany: 1 per 500). No single unit may cost more than ⅓ of the limit. Only units from the <b>Sets</b> you enabled above are shown — <b>house rule</b> / <b>fan</b> items are not in any physical box.',
-  gun:'Equipment units must be manned by a fresh squad in the same space to move (1 space) or fire. Cannot Assault. Destroyed if heavily damaged. ToI has no on-board field artillery — artillery is off-board via Strategy cards, which are not part of this points system.',
+  gun:'Equipment: no crew of its own — a friendly squad in the same space fires it; a fresh friendly unit moves it one space (Advance). No Fire &amp; Movement or Assault; destroyed if heavily damaged. Full move / limber / handling rules are in the Compendium. ToI has no on-board field artillery — that is off-board via Strategy cards and not part of this points system.',
   transport:'One transport per infantry squad. Assigned to the squad in the right panel — so it does not use a vehicle slot.',
   fort:'Fortification is governed by the scenario — see the briefing below. Free entrenchments from the scenario do not count toward points.',
 };
@@ -1831,6 +1832,29 @@ function buildCompendium(){
         ${refRows(N.guns, 'v', true)}
       </tbody></table></div>`;
   }
+
+  h += `<section><h2>Anti-tank guns &amp; equipment — movement and handling</h2>
+    <p class="lead">Every anti-tank gun (and the 88 / ZiS-3 dual-purpose gun) has the <b>Equipment</b> trait. An equipment unit has <b>no crew of its own</b> and can do nothing on its own — it always needs a friendly unit in its space. Rules below are consolidated from Days of the Fox and Fury of the Bear.</p>
+
+    <div class="callout"><b>Manning &amp; firing</b><br>
+      A <b>Concentrated Fire</b> or <b>Prepare Op Fire</b> action with the gun needs a friendly <b>squad</b> — fresh or in Op Fire mode — in the same space; firing the gun does <i>not</i> activate that squad, and the gun can join combined fire like any unit. On Op Fire the gun itself is fatigued, then follows the normal opportunity-fire rules. A <b>pinned</b> squad may still fire the gun at <b>half firepower</b> if a friendly officer is in the space. The gun <b>cannot be activated at all</b> while it — or the manning unit — is pinned, disrupted, heavily damaged, or inside a pillbox, bunker or trench. An equipment unit may <b>never</b> perform Fire &amp; Movement or Assault.</div>
+
+    <div class="callout" style="margin-top:9px"><b>Moving with the crew alone (no vehicle)</b><br>
+      The gun moves with an <b>Advance</b> action, and only if a <b>fresh friendly unit</b> is in its space. Fatigue both the friendly unit and the gun and move both together into one adjacent space free of enemy units — this is a <b>single action</b>. The gun moves <b>exactly one space, regardless of terrain</b>; it may not enter an impassable space or one that already holds two or more units, and any obstacle (e.g. a minefield) in the destination triggers as normal. A squad sitting <b>in an entrenchment</b> (not a pillbox/trench) may still work the gun, and the gun gains <b>+1 cover</b> from being with an entrenchment — but none from a pillbox or trench.</div>
+
+    <div class="callout" style="margin-top:9px"><b>Moving by vehicle — the optional "limber / tow" rule (Days of the Fox)</b><br>
+      <b>Load:</b> give the gun an <b>Advance</b> action to load onto a transport vehicle; the vehicle, the gun and a <b>fresh friendly squad</b> must all begin that action in the same space.<br>
+      <b>Carry:</b> the gun then rides with the vehicle at normal vehicle movement. It does <b>not</b> count against the vehicle's transport capacity, but a vehicle may carry <b>only one</b> gun at a time (on top of any squads it is transporting).<br>
+      <b>Unload:</b> give the gun an <b>Advance</b> action to leave the vehicle, with a <b>fresh friendly squad</b> in the space. The gun is <b>fatigued</b> on unloading, so it <b>cannot fire that turn</b> — deploy it the turn before you need it.<br>
+      <b>Tow pairings (guideline):</b> half-tracks tow the heavy guns (8.8 cm Flak); Bren Carriers only the light guns (M1 57 mm, QF 6-pdr); trucks tow the light / medium guns. Scenario special rules may override this.</div>
+
+    <div class="callout" style="margin-top:9px"><b>Combat &amp; capture</b><br>
+      <b>Fragile:</b> a heavily damaged AT gun is destroyed immediately. <b>Concussive Firepower:</b> vs a squad in a building or pillbox the gun gets <b>+3 firepower and +3 range</b>. When <b>assaulted</b>, the gun adds no dice, takes no hits and does not retreat, but it still counts toward the space's unit limit. <b>Capture:</b> if an enemy unit is in the gun's space, the gun counts as <i>their</i> unit and they may advance and fire it under these same rules; an equipment unit alone in a space does <b>not</b> block enemy movement into it.</div>
+
+    <p class="lead" style="margin-top:10px"><b>Transporting squads</b> is separate: a squad embarks or disembarks a Transport-trait vehicle for <b>2 MP</b> as part of its move, up to the vehicle's capacity (trucks 2, half-tracks / carriers 1). A transported squad can't act while aboard, and if the vehicle is destroyed the squad goes with it.</p>
+
+    <p class="lead" style="margin-top:6px; font-size:12.5px">In this builder a gun costs its listed points with <b>no crew to buy</b> — man it with any squad in play. Points assume you keep a squad with it.</p>
+  </section>`;
 
   h += `<section><h2>Fortifications &amp; obstacles</h2>
     <div class="tablewrap"><table class="ref"><thead><tr><th>Element</th><th>Effect</th><th>Source</th><th class="num">Pts</th></tr></thead><tbody>
