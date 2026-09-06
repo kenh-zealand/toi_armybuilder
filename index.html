@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tide of War Army Builder</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="hero">
+        <h1>Tide of War Army Builder</h1>
+        <p>
+          Build a roster with core and expansion units, then validate it against
+          the selected scenario.
+        </p>
+      </header>
+
+      <section class="panel controls">
+        <div>
+          <label for="scenario-select">Scenario</label>
+          <select id="scenario-select"></select>
+        </div>
+        <div>
+          <label for="faction-select">Faction</label>
+          <select id="faction-select"></select>
+        </div>
+        <fieldset>
+          <legend>Enabled sets</legend>
+          <div id="expansion-options" class="expansion-options"></div>
+        </fieldset>
+      </section>
+
+      <section class="grid">
+        <section class="panel">
+          <h2>Available units</h2>
+          <ul id="available-units" class="card-list"></ul>
+        </section>
+
+        <section class="panel">
+          <h2>Roster</h2>
+          <ul id="roster" class="card-list"></ul>
+        </section>
+      </section>
+
+      <section class="panel">
+        <h2>Scenario validation</h2>
+        <div id="summary"></div>
+        <ul id="issues" class="issues"></ul>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

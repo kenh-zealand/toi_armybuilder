@@ -1,0 +1,16 @@
+{
+  "name": "toi_armybuilder",
+  "version": "1.0.0",
+  "description": "Static Tide of War army builder",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://localhost:26831/kenh-zealand/toi_armybuilder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
