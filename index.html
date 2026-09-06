@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
   :root { color-scheme: light dark; }
   body { margin: 0; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #faf9f5; }
   img { max-width: 100%; }
   [hidden] { display: none !important; }
 </style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4C5334">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Battle Builder">
 <title>Tide of Iron - Battle Builder</title>
 <meta name="description" content="A fan-made, balanced points and army-builder system for Tide of Iron and every expansion, with a full unit compendium." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1937,6 +1945,11 @@ $('#footNote').innerHTML = `<b>Tide of Iron · Battle Builder</b> <span class="m
 
 seedSample();
 render();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
 </script>
 </body>
 </html>

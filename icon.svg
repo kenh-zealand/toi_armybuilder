@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Tide of Iron Battle Builder">
+  <rect width="512" height="512" fill="#4C5334"/>
+  <g>
+    <rect x="124" y="187" width="34" height="138" fill="#EDE8DA"/>
+    <rect x="180" y="187" width="34" height="138" fill="#EDE8DA"/>
+    <rect x="236" y="187" width="34" height="138" fill="#A0371E"/>
+    <rect x="292" y="187" width="34" height="138" fill="#EDE8DA"/>
+    <rect x="348" y="187" width="34" height="138" fill="#EDE8DA"/>
+  </g>
+</svg>

@@ -16,9 +16,26 @@ project's own house rules.
 
 ## Use it
 
-Open **`index.html`** in a browser — it's a single self‑contained file, no
-build step, no dependencies, nothing leaves your machine (saved lists live in
+Open **`index.html`** in a browser — a single self‑contained page, no server,
+no dependencies, nothing leaves your machine (saved lists live in
 `localStorage`).
+
+### Install it (works offline)
+
+It's a **PWA**. Serve the folder over HTTPS — the easiest way is **GitHub
+Pages** (repo → Settings → Pages → *Deploy from a branch* → `main` / root),
+which publishes it at `https://<user>.github.io/toi_armybuilder/`.
+
+Then on that page:
+
+- **Desktop Chrome / Edge** — click the install icon in the address bar.
+- **Android Chrome** — menu → *Install app* / *Add to Home screen*.
+- **iPhone / iPad Safari** — Share → *Add to Home Screen*.
+
+Once installed it opens full‑screen like a native app and runs with no
+internet connection (the fonts fall back to system fonts offline). A service
+worker (`sw.js`) caches the app; its cache name carries `APP_VERSION`, so a
+new build is picked up automatically on the next visit.
 
 ## What it does
 
@@ -46,12 +63,16 @@ build step, no dependencies, nothing leaves your machine (saved lists live in
 ## Editing
 
 `tide-of-iron-armybuilder.html` is the source of truth (it's authored for
-Claude Artifacts, which supply the outer HTML skeleton). Regenerate the
-standalone page after editing:
+Claude Artifacts, which supply the outer HTML skeleton). After editing it,
+rebuild the distributable:
 
 ```sh
-node build.mjs      # writes index.html from the source
+node build.mjs
 ```
+
+which regenerates `index.html` (skeleton + PWA wiring), `sw.js` (cache name
+stamped with the current `APP_VERSION`), and the PNG icons. `manifest.webmanifest`,
+`icon.svg` and `favicon.svg` are static.
 
 ## Version
 
