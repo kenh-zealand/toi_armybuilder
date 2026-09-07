@@ -526,7 +526,7 @@
 
 /* Version = 1.<number of revisions since the first release>.
    Bump the last entry's number and add a CHANGELOG line on every revision. */
-const APP_VERSION = '1.13';
+const APP_VERSION = '1.14';
 const CHANGELOG = [
   ['1.0', 'First release — builder, order-of-battle checks, compendium.'],
   ['1.1', 'Scenario-driven: 9 board-wargame scenarios set effective points, fortification, reserves and the checklist.'],
@@ -542,6 +542,7 @@ const CHANGELOG = [
   ['1.11', 'Readability pass — IBM Plex Sans body text, larger type, a brighter paper and much darker ink so the content stops blending into the background, especially on mobile.'],
   ['1.12', 'PDF / print fix — the Review sheet now prints pure black‑on‑white regardless of the on‑screen theme, so the exported PDF is crisp even with "Background graphics" off.'],
   ['1.13', 'Compendium — added the anti-tank gun / Equipment rules: manning and firing, moving one space with the crew, the optional vehicle limber / tow rule, capture, and squad transport.'],
+  ['1.14', 'Compendium — clarified that an AT gun cannot enter or be set up in a building (impassable to vehicles); it fires at squads in buildings from outside.'],
 ];
 
 /* =====================================================================
@@ -1860,7 +1861,7 @@ function buildCompendium(){
       A <b>Concentrated Fire</b> or <b>Prepare Op Fire</b> action with the gun needs a friendly <b>squad</b> — fresh or in Op Fire mode — in the same space; firing the gun does <i>not</i> activate that squad, and the gun can join combined fire like any unit. On Op Fire the gun itself is fatigued, then follows the normal opportunity-fire rules. A <b>pinned</b> squad may still fire the gun at <b>half firepower</b> if a friendly officer is in the space. The gun <b>cannot be activated at all</b> while it — or the manning unit — is pinned, disrupted, heavily damaged, or inside a pillbox, bunker or trench. An equipment unit may <b>never</b> perform Fire &amp; Movement or Assault.</div>
 
     <div class="callout" style="margin-top:9px"><b>Moving with the crew alone (no vehicle)</b><br>
-      The gun moves with an <b>Advance</b> action, and only if a <b>fresh friendly unit</b> is in its space. Fatigue both the friendly unit and the gun and move both together into one adjacent space free of enemy units — this is a <b>single action</b>. The gun moves <b>exactly one space, regardless of terrain</b>; it may not enter an impassable space or one that already holds two or more units, and any obstacle (e.g. a minefield) in the destination triggers as normal. A squad sitting <b>in an entrenchment</b> (not a pillbox/trench) may still work the gun, and the gun gains <b>+1 cover</b> from being with an entrenchment — but none from a pillbox or trench.</div>
+      The gun moves with an <b>Advance</b> action, and only if a <b>fresh friendly unit</b> is in its space. Fatigue both the friendly unit and the gun and move both together into one adjacent space free of enemy units — this is a <b>single action</b>. The gun moves <b>exactly one space, regardless of terrain</b>; it may not enter a space impassable to vehicles — <b>including a building</b> — nor one that already holds two or more units, and any obstacle (e.g. a minefield) in the destination triggers as normal. It cannot be set up or placed inside a building for the same reason. A squad sitting <b>in an entrenchment</b> (not a pillbox/trench) may still work the gun, and the gun gains <b>+1 cover</b> from being with an entrenchment — but none from a pillbox or trench.</div>
 
     <div class="callout" style="margin-top:9px"><b>Moving by vehicle — the optional "limber / tow" rule (Days of the Fox)</b><br>
       <b>Load:</b> give the gun an <b>Advance</b> action to load onto a transport vehicle; the vehicle, the gun and a <b>fresh friendly squad</b> must all begin that action in the same space.<br>
